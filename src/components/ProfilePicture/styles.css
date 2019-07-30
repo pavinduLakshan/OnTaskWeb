@@ -1,0 +1,38 @@
+.pro_pic{
+    opacity: 1;
+  display: block;
+  width: 35%;
+  height: auto;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+/* .pro_pic_container{
+    display: flex; 
+    position: relative; 
+    /width: 50%; 
+} */
+
+.pro_pic_update_btn{
+    transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 74%;
+  border-radius: 0px 0px 10px 10px;
+  left: 50%;
+  padding: 2%;
+  background-color: #E2DDDC;
+  width: 87%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+  cursor: pointer;
+}
+
+.pro_pic_container:hover .pro_pic {
+    opacity: 0.8;
+  }
+  
+  .pro_pic_container:hover .pro_pic_update_btn {
+    opacity: 1;
+  }

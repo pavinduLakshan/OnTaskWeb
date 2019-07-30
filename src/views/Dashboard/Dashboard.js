@@ -1,5 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
+import RequireAuth from '../../utils/PrivateRoute'
 import {
   Badge,
   Button,
@@ -24,7 +25,7 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
 
 const Widget03 = lazy(() => import('../../views/Widgets/Widget03'));
-
+    
 const brandPrimary = getStyle('--primary')
 const brandSuccess = getStyle('--success')
 const brandInfo = getStyle('--info')
@@ -359,8 +360,6 @@ const sparklineChartOpts = {
   },
 };
 
-// Main Chart
-
 //Random Numbers
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -482,7 +481,7 @@ class Dashboard extends Component {
   render() {
 
     return (
-      <div className="animated fadeIn">
+      <div className="animated fadeIn" style={{marginTop: "0.5%"}}>
         <Row>
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-info">
@@ -892,7 +891,7 @@ class Dashboard extends Component {
                   </Col>
                 </Row>
                 <br />
-                <Table hover responsive className="table-outline mb-0 d-none d-sm-table">
+                {/* <Table hover responsive className="table-outline mb-0 d-none d-sm-table">
                   <thead className="thead-light">
                   <tr>
                     <th className="text-center"><i className="icon-people"></i></th>
@@ -1116,7 +1115,7 @@ class Dashboard extends Component {
                     </td>
                   </tr>
                   </tbody>
-                </Table>
+                </Table> */}
               </CardBody>
             </Card>
           </Col>
@@ -1126,4 +1125,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default RequireAuth(Dashboard)

@@ -1,4 +1,5 @@
 import React, { Component, Suspense } from 'react';
+import RequireAuth from '../../utils/PrivateRoute'
 import { Redirect, Route, Switch } from 'react-router-dom';
 import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
@@ -30,6 +31,8 @@ class DefaultLayout extends Component {
 
   signOut(e) {
     e.preventDefault()
+    localStorage.removeItem("token");
+    localStorage.removeItem("id");
     this.props.history.push('/login')
   }
 
@@ -42,7 +45,7 @@ class DefaultLayout extends Component {
           </Suspense>
         </AppHeader>
         <div className="app-body">
-          <AppSidebar fixed display="lg">
+          {/* <AppSidebar fixed display="lg">
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
@@ -50,9 +53,9 @@ class DefaultLayout extends Component {
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />
-          </AppSidebar>
+          </AppSidebar> */}
           <main className="main">
-            <AppBreadcrumb appRoutes={routes} router={router}/>
+            {/* <AppBreadcrumb appRoutes={routes} router={router}/>  */}
             <Container fluid>
               <Suspense fallback={this.loading()}>
                 <Switch>
@@ -68,7 +71,7 @@ class DefaultLayout extends Component {
                         )} />
                     ) : (null);
                   })}
-                  <Redirect from="/" to="/dashboard" />
+                  <Redirect exact from="/" to="/dashboard" />
                 </Switch>
               </Suspense>
             </Container>
@@ -79,11 +82,11 @@ class DefaultLayout extends Component {
             </Suspense>
           </AppAside>
         </div>
-        <AppFooter>
+        {/* <AppFooter>
           <Suspense fallback={this.loading()}>
             <DefaultFooter />
           </Suspense>
-        </AppFooter>
+        </AppFooter> */}
       </div>
     );
   }
