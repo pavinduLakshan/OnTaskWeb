@@ -1,43 +1,47 @@
 import React, { useEffect,useState} from 'react'
 import SENDER from '../../utils/SENDER';
+import { withRouter } from 'react-router-dom'
 import Modal from "react-bootstrap/Modal";
+import ReactMarkdown from 'react-markdown'
+import './noticeviewer.css'
 
 const NoticeViewer = props => {
     const [content,setContent] = useState("")
     const [title,setTitle] = useState("")
     const [show, setShow] = useState(true);
-    const [p, setP] = useState(true);
+
+    const closeModal = () => {
+      setShow(false)
+      //window.location.reload()
+      props.history.push('/groups/'+props.groupId)
+    }
 
     useEffect(
         () => {
-            if (props.id && p) {
-                setShow(true);
-              } else {
-                setShow(false);
-                if (!p) {
-                  window.location.reload();
-                }
-              }
+          if (props.id) {
+            setShow(true);
+          } else {
+            setShow(false);
+          }
 
-            if(props.id !== null){
                 SENDER.get('/notices/'+props.id).then(
                     res => {
                         setContent(res.data.content)
                         setTitle(res.data.title)
                     }
                 ).catch(err => console.log(err))
-            }
-        }
+            
+        },[props.id]
     )
     return(
         <Modal
         size="sm"
         show={show}
-        onHide={() => setP(false)}
+        onHide={closeModal}
         backdrop="static"
-        dialogClassName="task_viewer_modal"
-        //aria-labelledby="contained-modal-title-vcenter"
-        //centered
+        dialogClassName="notice_viewer"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-modal-sizes-title-lg">
@@ -46,17 +50,15 @@ const NoticeViewer = props => {
         </Modal.Header>
         <Modal.Body
           style={{
-            maxHeight: "calc(100vh - 190px)",
-            height: "50vh",
+            maxHeight: "calc(100vh - 200px)",
+            height: "40vh",
             overflowY: "auto",
           }}
         >   
-            <div>
-                    <div style={{textAlign: "justify"}}dangerouslySetInnerHTML={{__html: content}}></div>
-        </div>
+            <ReactMarkdown source={content} style={{height: "30vh"}}/>
         </Modal.Body>
         </Modal>
     )
 }
 
-export default NoticeViewer
+export default withRouter(NoticeViewer)

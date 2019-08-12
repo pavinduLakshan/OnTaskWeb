@@ -1,10 +1,11 @@
 import React,{ Component } from 'react'
 import Modal from 'react-bootstrap/Modal'
+import { Input } from 'reactstrap'
 import Button  from 'react-bootstrap/Button'
-import ReactQuill from 'react-quill'
+import Tab from 'react-bootstrap/Tab'
+import ReactMarkdown from 'react-markdown'
+import Tabs from 'react-bootstrap/Tabs'
 import SENDER from '../../utils/SENDER'
-import 'react-quill/dist/quill.snow.css';
-import Form from 'react-bootstrap/Form';
 
 class NewNoticeForm extends Component{
     constructor(props, context) {
@@ -38,10 +39,11 @@ class NewNoticeForm extends Component{
         console.log(text)
         this.setState({content: text})
       }
-    
+      
       handleSubmit = e => {
         e.preventDefault()
-        SENDER.post('/notices',{
+        if(this.state.title !== undefined && this.state.title.length>0){
+          SENDER.post('/notices',{
             userId: localStorage.getItem('id'),
             groupId: this.props.groupId,
             title: this.state.title,
@@ -51,7 +53,7 @@ class NewNoticeForm extends Component{
               alert("New Notice was added successfully")
             }
           }).catch(err => console.log(err))
-    
+        }  
       }
     
       render() {
@@ -66,19 +68,18 @@ class NewNoticeForm extends Component{
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form.Control
-              onChange={this.handleChange}
-              name="title"
-              placeholder="Title"
-            >
-            </Form.Control>
-            <ReactQuill 
-              value={this.state.content}
-              onChange={this.handleContent}
-               />
+          <Input name="title" style={{marginBottom: "1%"}} placeholder="title" required onChange={this.handleChange}></Input>
+        <Tabs defaultActiveKey="write" id="uncontrolled-tab-example">
+  <Tab eventKey="write" title="Write">
+    <Input type="textarea" name="content" style={{height: "30vh"}} onChange={this.handleChange} id="exampleText" />
+  </Tab>
+  <Tab eventKey="preview" title="Preview" style={{}}>
+    <ReactMarkdown source={this.state.content} style={{textAlign: "justify",height: "30vh"}}/>
+  </Tab>
+</Tabs>
         </Modal.Body>
         <Modal.Footer>
-          <p style={{color: "red",cursor: "pointer",marginTop: "4%"}} onClick={this.props.onHide}>Close</p>
+          <p style={{color: "red",cursor: "pointer",marginTop: "4%"}} onClick={() => {this.setState({content: "",title: ""});this.handleClose()}}>Close</p>
           <Button variant="success" onClick={this.handleSubmit}>Create Announcement</Button>
         </Modal.Footer>
             </Modal>
