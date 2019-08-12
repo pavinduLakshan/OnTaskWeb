@@ -9,11 +9,6 @@ export default function requireAuth(WrappedComponent) {
       isAuth: false,
     };
 
-    constructor(props) {
-      super(props);
-    }
-    
-
     componentDidMount() {
       axios.defaults.headers["Authorization"] =
         "Bearer " + localStorage.getItem("token");

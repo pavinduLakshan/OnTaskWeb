@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter} from 'react-router-dom'
 
 const Dashboard = React.lazy(() => import('./views/Dashboard'));
 const Group = React.lazy(() => import('./views/Group'));
@@ -10,10 +11,10 @@ const User = React.lazy(() => import('./views/Users/User'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/groups/:gid', name: 'Group', component: Group },
+  { path: '/groups/:gid', exact: true,name: 'Group', component: withRouter(Group) },
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/users', exact: true,  name: 'Users', component: Users },
-  { path: '/users/:id', exact: true, name: 'User Details', component: User },
+  { path: '/users/:id', exact: true, name: 'User Details', component: Profile },
 ];
 
 export default routes;

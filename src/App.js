@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import axios from 'axios'
 // import { renderRoutes } from 'react-router-config';
+import LoadingComponent from './components/LoadingComponent'
 import './App.scss';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
@@ -22,7 +23,7 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-          <React.Suspense fallback={loading()}>
+          <React.Suspense fallback={<LoadingComponent />}>
             <Switch>
               <Route exact path="/login" name="Login Page" render={props => <Login {...props}/>} />
               <Route exact path="/signup" name="Signup Page" render={props => <Signup {...props}/>} />
