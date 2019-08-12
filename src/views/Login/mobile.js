@@ -18,7 +18,7 @@ const styles = {
 const Mobile = props => {
   return (
     <div style={styles.container}>
-      <h4>To login with the mobile app,</h4>
+      <h5>To login with the mobile app,</h5>
         <Row style={styles.row}>
           <Col sm={12} md={8} style={{}}>
             <ol>

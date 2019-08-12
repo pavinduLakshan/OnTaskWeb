@@ -7,7 +7,7 @@ import axios from 'axios'
 import {withRouter} from 'react-router-dom'
 
 const formStyle = {
-  padding: "10%",
+  padding: "15%",
   width: "100%",
   backgroundColor: "white"
 };

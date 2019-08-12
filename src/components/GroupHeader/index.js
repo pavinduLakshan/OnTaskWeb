@@ -34,9 +34,9 @@ class GroupHeader extends Component {
 
     render() {
         return (
-            <div style={{width: "100%",display: "flex",flexDirection: "row",alignItems: "center",backgroundColor: "#2AA1E2",color: "white",margin: 0,padding: "0.5%"}}>
-          <h2>{this.props.name}</h2>
-          <Button id="Popover1" color="success" style={{marginLeft: "1%"}} onClick={this.toggle}>
+            <div className="bg-success" style={{width: "100%",display: "flex",flexDirection: "row",alignItems: "center",color: "white",margin: 0,padding: "0.4%"}}>
+          <h5>{this.props.name}</h5>
+          <Button id="Popover1" style={{marginLeft: "1%",backgroundColor: "green",color: "white",border: 0}} onClick={this.toggle}>
               Invite
             </Button>
             <Popover  placement="bottom-start" isOpen={this.state.popoverOpen} target="Popover1" toggle={this.toggle}>
@@ -50,7 +50,7 @@ class GroupHeader extends Component {
             </PopoverBody>
             </Popover>
           <span style={{flexGrow: 1}}></span>
-            <GroupSettings />
+            <GroupSettings groupName={this.props.name}/>
         </div>
         );
     }

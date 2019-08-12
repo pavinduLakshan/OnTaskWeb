@@ -1,12 +1,11 @@
 import React,{ useState } from "react";
 import useForm from '../../utils/useForm'
-import {Link} from 'react-router-dom'
 import Form from "react-bootstrap/Form";
 import IntlTelInput from "react-bootstrap-intl-tel-input";
 import Button from 'react-bootstrap/Button'
 
 const formStyle = {
-  padding: "10%",
+  padding: "20%",
   width: "100%",
       backgroundColor: "white",
 };
@@ -73,7 +72,6 @@ const handleMobile = data => {
     <div style={{display: "flex",justifyContent: "center"}}> 
     <Button className="btns" type="submit">Create Account</Button>
     </div> 
-    <h6 style={{textAlign: "center"}}>Have an account? <Link to="/login">Login</Link></h6>
     </Form>
     // </div>
   );

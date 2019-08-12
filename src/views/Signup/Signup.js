@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Card, CardBody } from "reactstrap";
+import {Link} from 'react-router-dom'
 import Logo from "../../assets/img/brand/logo.PNG";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
@@ -27,14 +28,14 @@ const styles = {
     margin: "10px",
   },
   background: {
-    background: "linear-gradient(180deg, #1117e1 50%, #FFFFFF 50%)",
+    // background: "linear-gradient(180deg, #1117e1 50%, #FFFFFF 50%)",
     height: "100vh" 
   },
 };
 
 class Signup extends Component {
   componentDidMount() {
-    axios.get("/api/auth/user/me").then(res => {
+    axios.get("/auth/user/me").then(res => {
       if (res.data.id > 0) {
         //alert("You are already logged in as " + res.data.fname +"\nPlease logout and try again")
         this.props.history.push("/");
@@ -43,7 +44,7 @@ class Signup extends Component {
   }
 
   componentDidUpdate() {
-    axios.get("/api/auth/user/me").then(res => {
+    axios.get("/auth/user/me").then(res => {
       if (res.data.id > 0) {
         //alert("You are already logged in as " + res.data.fname +"\nPlease logout and try again")
         this.props.history.push("/");
@@ -54,7 +55,7 @@ class Signup extends Component {
   signupWithMobile = values => {
     console.log(values);
     axios
-      .post("/api/auth/signup/mobile", values)
+      .post("/auth/signup/mobile", values)
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   };
@@ -78,38 +79,39 @@ class Signup extends Component {
           <Col
             xs="12"
             sm="6"
-            lg="3"
+            lg="4"
             className="p-3"
             style={{ paddingRight: 0 }}
           />
           <Col
             xs="12"
             sm="12"
-            lg="6"
+            lg="4"
             className="p-3"
             style={{ paddingRight: 0 }}
           >
             <Tabs>
-              <TabList style={{ padding: 0 }}>
-                <Tab style={{ width: "50%", margin: 0, padding: 0 }}>
-                  <h4 style={{ marginTop: "5%", textAlign: "center" }}>
+              <TabList style={{ padding: 0,border: 0 }}>
+                <Tab style={{ width: "50%",border: 0, margin: 0, padding: 0 }}>
+                  <h5 style={{ marginTop: "5%", textAlign: "center" }}>
                     Signup with mobile
-                  </h4>
+                  </h5>
                 </Tab>
-                <Tab style={{ width: "50%", margin: 0, padding: 0 }}>
-                  <h4 style={{ marginTop: "5%", textAlign: "center" }}>
+                <Tab style={{ width: "50%", border: 0,margin: 0, padding: 0 }}>
+                  <h5 style={{ marginTop: "5%", textAlign: "center" }}>
                     Signup with Email
-                  </h4>
+                  </h5>
                 </Tab>
               </TabList>
 
               <TabPanel style={{ marginTop: "-1.5%" }}>
                 <MobileSignup signupWithMobile={this.signupWithMobile} />
               </TabPanel>
-              <TabPanel style={{ marginTop: "-1.5%" }}>
+              <TabPanel style={{ marginTop: "-1%" }}>
                 <EmailSignup signupWithEmail={this.signupWithEmail} />
               </TabPanel>
             </Tabs>
+            <h6 style={{textAlign: "center"}}>Have an account? <Link to="/login">Login</Link></h6>
           </Col>
         </Row>
       </div>

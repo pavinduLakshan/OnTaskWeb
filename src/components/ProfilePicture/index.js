@@ -4,7 +4,7 @@ import { Camera } from "styled-icons/boxicons-solid/Camera";
 import SENDER from "../../utils/SENDER";
 import { User } from 'styled-icons/boxicons-regular/User'
 
-const ProfilePicture = () => {
+const ProfilePicture = props => {
     const uploader = useRef(null);
   const [on, setOn] = useState(true);
   const [propic, setPropic] = useState(null);
@@ -35,7 +35,7 @@ const ProfilePicture = () => {
       };
       
     useEffect(() => {
-        SENDER.get("/user/" + localStorage.getItem("id") + "/pro-pic").then(
+        SENDER.get("/user/" + props.id + "/pro-pic").then(
           res => {
             console.log(res.data);
             setPropic(res.data);
@@ -53,10 +53,10 @@ const ProfilePicture = () => {
           onMouseEnter={showOv}
           className="pro_pic"
           alt=""
-          style={{ borderRadius: "10px",height: "45vh",width: "100%"}}
+          style={{ borderRadius: "10px",height: "55vh",width: "100%"}}
         />
         </div>
-        <div className="pro_pic_update_btn">
+        <div className="pro_pic_update_btn" style={{display: localStorage.getItem('id') === props.id ? "block" : "none"}}>
           <input
             ref={uploader}
             onChange={fileChangedHandler}
