@@ -13,12 +13,13 @@ const CommentBox = props => {
     } 
 
     function postComment(event){
+        setInput("pppp")
         event.preventDefault()
-        console.log({
-            taskId: props.taskId,
-            content: input,
-            userId: parseInt(localStorage.getItem('id'))
-        })
+        // console.log({
+        //     taskId: props.taskId,
+        //     content: input,
+        //     userId: parseInt(localStorage.getItem('id'))
+        // })
         SENDER.post('/comments',{
             taskId: props.taskId,
             content: input,
@@ -26,10 +27,10 @@ const CommentBox = props => {
         }).then(
             res => {
                 if(res.status === 200){
-                    alert("New comment Added")
+                    
+                    //alert("New comment Added")
                 }
-                setInput("")
-                props.onAdd()
+                //props.onAdd()
             }
         ).catch(err => console.log("Comment Error : "+err))
     }
@@ -38,7 +39,7 @@ const CommentBox = props => {
         <>
         <Tabs defaultActiveKey="write" id="uncontrolled-tab-example">
   <Tab eventKey="write" title="Write" style={{padding: 0}}>
-    <Input type="textarea" name="input" onChange={handleChange} defaultValue={input} id="exampleText" />
+    <Input type="textarea" name="input" onChange={handleChange} id="exampleText" />
   </Tab>
   <Tab eventKey="preview" title="Preview">
     <ReactMarkdown source={input} />

@@ -3,10 +3,22 @@ import SENDER from "../../utils/SENDER";
 import { Card, CardHeader, CardBody } from "reactstrap";
 import CommentBox from "./CommentBox";
 import Comment from './Comment'
+import pusher from '../../utils/PusherObject'
 
 const TaskDiscussion = props => {
   const [comments, setComments] = useState([]);
-  const [addCmntEvt, setEvt] = useState(false);
+
+  function addComments(data){
+    console.log("chat evt")
+    //console.log(data)
+    SENDER.get("/comments/" + parseInt(props.taskId))
+    .then(res => {
+      setComments(res.data);
+    })
+    .catch(err => console.log(err));
+  }
+      var channel = pusher.subscribe("chat_"+props.taskId);
+      channel.bind('new_comment',addComments);
 
   useEffect(() => {
     SENDER.get("/comments/" + parseInt(props.taskId))
@@ -14,11 +26,7 @@ const TaskDiscussion = props => {
         setComments(res.data);
       })
       .catch(err => console.log(err));
-  }, [addCmntEvt]);
-
-  function onAddComment() {
-    setEvt(!addCmntEvt);
-  }
+  }, []);
 
   return (
     <Card className="border-light">
@@ -26,7 +34,7 @@ const TaskDiscussion = props => {
         <i className="icon-speech" />
         <b>Discussion</b>
       </CardHeader>
-      <CardBody style={{ padding: 0 }}>
+      <CardBody style={{ padding: 0,height: "65vh",overflowY: "auto",paddingTop: "1%" }}>
       {comments.map(comment => {
           return (
             <Comment
@@ -37,7 +45,7 @@ const TaskDiscussion = props => {
             />
           );
         })}
-        <CommentBox taskId={props.taskId} onAdd={onAddComment} />
+        <CommentBox taskId={props.taskId} />
       </CardBody>
     </Card>
   );
