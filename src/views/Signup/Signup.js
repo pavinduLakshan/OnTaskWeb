@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, Card, CardBody } from "reactstrap";
 import {Link} from 'react-router-dom'
-import Logo from "../../assets/img/brand/logo.PNG";
+import Logo from "../../assets/img/brand/logo.svg";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { withRouter } from "react-router-dom";
@@ -29,7 +29,8 @@ const styles = {
   },
   background: {
     // background: "linear-gradient(180deg, #1117e1 50%, #FFFFFF 50%)",
-    height: "100vh" 
+    backgroundColor: "#1FDC75",
+  minHeight: "100vh" 
   },
 };
 
@@ -111,7 +112,7 @@ class Signup extends Component {
                 <EmailSignup signupWithEmail={this.signupWithEmail} />
               </TabPanel>
             </Tabs>
-            <h6 style={{textAlign: "center"}}>Have an account? <Link to="/login">Login</Link></h6>
+            <h6 style={{marginTop: "2%",textAlign: "center"}}>Have an account? <Link to="/login">Login</Link></h6>
           </Col>
         </Row>
       </div>
