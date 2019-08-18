@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from 'react';
-import RequireAuth from '../../utils/PrivateRoute'
+//import RequireAuth from '../../utils/PrivateRoute'
 import { Redirect, Route, Switch } from 'react-router-dom';
 import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
@@ -27,12 +27,12 @@ const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
 class DefaultLayout extends Component {
 
-  loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
+  loading = () => <div className="animated fadeIn pt-1 text-center"></div>
 
   signOut(e) {
     e.preventDefault()
-    localStorage.removeItem("token");
-    localStorage.removeItem("id");
+    localStorage.removeItem('token');
+    localStorage.removeItem('id');
     this.props.history.push('/login')
   }
 
@@ -56,7 +56,7 @@ class DefaultLayout extends Component {
           </AppSidebar> */}
           <main className="main">
             {/* <AppBreadcrumb appRoutes={routes} router={router}/>  */}
-            <Container fluid>
+            <Container fluid style={{padding: "0.5%",paddingTop: 0}}>
               <Suspense fallback={this.loading()}>
                 <Switch>
                   {routes.map((route, idx) => {
