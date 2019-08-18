@@ -14,7 +14,7 @@ class MemberSearchItem extends Component {
       <div
       style={{
         alignItems: "center",
-        display: "flex",
+        display: this.props.id !== parseInt(localStorage.getItem('id'))?"flex":"none",
         flexDirection: "row",
         paddingBottom: "2%"
       }}
@@ -32,14 +32,18 @@ class MemberSearchItem extends Component {
           }}
           className="list-group-item-accent-warning"
         >
-          <img
+          {
+            this.props.data.propicURL ? 
+            <img
             style={{ borderRadius: "50%" }}
             className="img-avatar"
             width="25"
             height="25"
             src={this.props.data.propicURL}
             alt=""
-          />
+          /> :
+          <i className="fa fa-user" style={{fontSize: "25px"}}></i>
+          }
           <div style={{ marginLeft: "1%" }}>{this.props.name} </div>
         </ListGroupItem>
         <div style={{ flexGrow: 1 }} />
