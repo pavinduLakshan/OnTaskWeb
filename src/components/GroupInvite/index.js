@@ -144,7 +144,7 @@ class GroupInviteModal extends React.Component {
                 </InputGroup.Text>
               </InputGroup.Append>
             </InputGroup>
-            <div className="selected" style={{ paddingTop:  "2%" }}>
+            <div className="selected" style={{ paddingTop:  "1%" }}>
               {this.state.groupMembers ? (
                 this.state.groupMembers.map(result => {
                   const lname = result.lname ? result.lname : "";
@@ -176,7 +176,7 @@ class GroupInviteModal extends React.Component {
                 );
               })}
             </div>
-            <div style={{display: "flex",flexDirection: "row"}}>
+            {/* <div style={{display: "flex",flexDirection: "row"}}>
             <Input
               as="textarea"
               defaultValue={this.state.message}
@@ -186,7 +186,7 @@ class GroupInviteModal extends React.Component {
               name="message"
             />
             <Button color="success" style={{width: "30%",marginLeft: "2%"}}>Invite users</Button>
-            </div>
+            </div> */}
             
 
             <h6 style={{marginTop: "3%"}}>Invite by link <span onClick={this.createInviteLink} style={{cursor: "pointer",color: "green"}}>Create link</span></h6>

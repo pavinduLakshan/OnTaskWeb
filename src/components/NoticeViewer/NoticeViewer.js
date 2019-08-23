@@ -8,7 +8,7 @@ import './noticeviewer.css'
 const NoticeViewer = props => {
     const [content,setContent] = useState("")
     const [title,setTitle] = useState("")
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
 
     const closeModal = () => {
       setShow(false)
@@ -20,10 +20,7 @@ const NoticeViewer = props => {
         () => {
           if (props.id) {
             setShow(true);
-          } else {
-            setShow(false);
           }
-
                 SENDER.get('/notices/'+props.id).then(
                     res => {
                         setContent(res.data.content)
@@ -55,7 +52,7 @@ const NoticeViewer = props => {
             overflowY: "auto",
           }}
         >   
-            <ReactMarkdown source={content} style={{height: "30vh"}}/>
+            <ReactMarkdown source={content} style={{textAlign: "justify",height: "30vh"}}/>
         </Modal.Body>
         </Modal>
     )

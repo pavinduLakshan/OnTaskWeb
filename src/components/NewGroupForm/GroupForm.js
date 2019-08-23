@@ -58,10 +58,11 @@ const GroupForm = props => {
     }
 
 
-  function createNewGroup() {
+  function createNewGroup(e) {
+    e.preventDefault();
     console.log(values);
     SENDER.post("/groups", {
-      userId: localStorage.getItem("id"),
+      userId: localStorage.getItem('id'),
       name: values.name,
       description: values.description,
       members: groupMembers.map( member => member.userId)
