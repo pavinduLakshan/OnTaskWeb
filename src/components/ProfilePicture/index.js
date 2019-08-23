@@ -25,6 +25,7 @@ const ProfilePicture = props => {
           .then(res => {
             if (res.status === 200) {
               alert("Propic suc");
+              setOn(!on)
             }
           })
           .catch(err => alert("err"));
@@ -48,13 +49,15 @@ const ProfilePicture = props => {
         <div className="pro_pic_container" >
         <div        
           style={{ borderRadius: "50%" }}>
-        <img
-          src={propic ? propic : User}
+        {
+          propic ? <img
+          src={propic}
           onMouseEnter={showOv}
           className="pro_pic"
           alt=""
-          style={{ borderRadius: "10px",height: "55vh",width: "100%"}}
-        />
+          style={{ borderRadius: "10px",height: "40vh",width: "100%"}}
+        />:<i class="fa fa-user" style={{marginLeft: "9%",fontSize: "220px"}}></i>
+        }
         </div>
         <div className="pro_pic_update_btn" style={{display: localStorage.getItem('id') === props.id ? "block" : "none"}}>
           <input

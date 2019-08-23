@@ -4,7 +4,6 @@ import { Clock } from "styled-icons/feather/Clock";
 import {Github} from 'styled-icons/boxicons-logos/Github'
 import ProfilePicture from '../../components/ProfilePicture'
 import {Link2} from 'styled-icons/feather/Link2'
-import './UserProfile.css'
 import { Row, Col, Card, CardBody } from "reactstrap";
 
 const UserProfile = props => {
