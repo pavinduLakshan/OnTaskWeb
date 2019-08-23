@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import RequireAuth from "../../utils/PrivateRoute";
 import SENDER from "../../utils/SENDER";
-import DefaultAside from '../../containers/DefaultLayout/DefaultAside'
-import ProfilePicture from '../../components/ProfilePicture'
+import ProfilePane from './ProfilePane'
 import {
   ButtonDropdown,
   Popover, PopoverBody, PopoverHeader,
@@ -29,11 +28,11 @@ class Profile extends Component {
   };
 
   componentDidMount() {
-    SENDER.get("/user/" + localStorage.getItem("id")).then(res => {
-      this.setState({userData: res.data});
-    });
-
-    this.setState({lname: this.state.userData.lname ? this.state.userData.lname: ""})
+      SENDER.get("/users/" + this.props.match.params.id).then(res => {
+        this.setState({userData: res.data});
+      });
+  
+      this.setState({lname: this.state.userData.lname ? this.state.userData.lname: ""})  
   }
 
   componentDidUpdate(prevProps) {
@@ -51,20 +50,17 @@ class Profile extends Component {
   render() {
     return (
       <Row style={{ marginTop: "0.5%" }}>
-      <Col xs="12" sm="6" lg="3">
+      
+      <Col xs="12" sm="12" lg="9" style={{paddingRight: 0}}>
       <Card>
           <CardBody>
-            <ProfilePicture />
-            {/* <img src={this.state.propic} alt="" style={{width: "100%",height: "35vh"}}/> */}
+            <ProfilePane id={this.props.match.params.id}/>
           </CardBody>
-          <CardHeader><h3>{this.state.userData.fname + " "+this.state.lname}</h3></CardHeader>
         </Card>
       </Col>
-      <Col xs="12" sm="6" lg="9" style={{paddingLeft: 0}}>
-      <Card>
-          <CardBody>
-            <DefaultAside />
-          </CardBody>
+      <Col xs="12" sm="6" lg="3">
+        <Card>
+          <CardHeader>User Activity</CardHeader>
         </Card>
       </Col>
       </Row>  
