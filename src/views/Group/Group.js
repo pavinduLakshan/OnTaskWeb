@@ -1,14 +1,21 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { Bar, Line } from "react-chartjs-2";
+import Pusher from "pusher-js";
+import pusher from "../../utils/PusherObject";
 import RequireAuth from "../../utils/PrivateRoute";
-import GroupHeader from '../../components/GroupHeader'
+import GroupHeader from "../../components/GroupHeader";
+import TaskItem from "../../components/TaskItem";
 import SENDER from "../../utils/SENDER";
 import NewTaskForm from "../../components/NewTaskForm";
-import MemberItem from "../../components/GroupMemberItem"
-import TaskViewer from '../TaskViewer'
+import MemberItem from "../../components/GroupMemberItem";
+import TaskViewer from "../TaskViewer";
 import {
   ButtonDropdown,
-  Popover, PopoverBody, PopoverHeader,
+  Popover,
+  PopoverBody,
+  PopoverHeader,
+  Progress,
   Button,
   ButtonGroup,
   ListGroupItem,
@@ -26,7 +33,7 @@ import {
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 import { getStyle, hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
 import NewNoticeForm from "../../components/NewNoticeForm";
-import NoticeViewer from "../../components/NoticeViewer/NoticeViewer"
+import NoticeViewer from "../../components/NoticeViewer/NoticeViewer";
 
 const brandPrimary = getStyle("--primary");
 const brandSuccess = getStyle("--success");
@@ -34,175 +41,44 @@ const brandInfo = getStyle("--info");
 const brandWarning = getStyle("--warning");
 const brandDanger = getStyle("--danger");
 
-// Card Chart 1
-const cardChartData1 = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    {
-      label: "My First dataset",
-      backgroundColor: brandPrimary,
-      borderColor: "rgba(255,255,255,.55)",
-      data: [65, 59, 84, 84, 51, 55, 40],
-    },
-  ],
-};
-
-const cardChartOpts1 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips,
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: "transparent",
-          zeroLineColor: "transparent",
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: "transparent",
-        },
-      },
-    ],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData1.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData1.datasets[0].data) + 5,
-        },
-      },
-    ],
-  },
-  elements: {
-    line: {
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 2
-const cardChartData2 = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    {
-      label: "My First dataset",
-      backgroundColor: brandInfo,
-      borderColor: "rgba(255,255,255,.55)",
-      data: [1, 18, 9, 17, 34, 22, 11],
-    },
-  ],
-};
-
-const cardChartOpts2 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips,
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: "transparent",
-          zeroLineColor: "transparent",
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: "transparent",
-        },
-      },
-    ],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData2.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData2.datasets[0].data) + 5,
-        },
-      },
-    ],
-  },
-  elements: {
-    line: {
-      tension: 0.00001,
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 3
-const cardChartData3 = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    {
-      label: "My First dataset",
-      backgroundColor: "rgba(255,255,255,.2)",
-      borderColor: "rgba(255,255,255,.55)",
-      data: [78, 81, 80, 45, 34, 12, 40],
-    },
-  ],
-};
-
-const cardChartOpts3 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips,
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-      },
-    ],
-    yAxes: [
-      {
-        display: false,
-      },
-    ],
-  },
-  elements: {
-    line: {
-      borderWidth: 2,
-    },
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
 class Group extends Component {
+  constructor(props) {
+    super(props);
+    // Enable pusher logging - don't include this in production
+
+    this.groupDesc = React.createRef();
+
+    var channel = pusher.subscribe("group_" + this.props.match.params.gid);
+    channel.bind("new_task", this.hha);
+  }
+
+  hha = data => {
+    console.log("Evt data: ");
+    console.log(data);
+  };
+
+  handleDesChange = () => {
+    this.setState({ desEditable: false });
+    SENDER.post("/groups/" + this.props.match.params.gid + "/edit-desc", null, {
+      params: {
+        editedBy: localStorage.getItem('id'),
+        desc: this.groupDesc.current.innerText,
+      },
+    })
+      .then(
+        res => {}
+        //alert("Description Updated")
+      )
+      .catch(err => alert("Error"));
+  };
+
   state = {
-    trig: 0,
+    trig: false,
+    inviteLink: "",
     groupData: [],
     announcements: [],
     notices: [],
+    groupActivities: [],
     tasks: [],
     admins: [],
     members: [],
@@ -211,38 +87,68 @@ class Group extends Component {
     selectedNotice: null,
     selectedTask: null,
     popoverOpen: false,
-    memberCount: 0
+    memberCount: 0,
+    percentage: 0,
+    description: "",
+    desEditable: false,
   };
 
   componentDidMount() {
-    const params = new URLSearchParams(this.props.location.search)
-    const itoken = params.get("itoken")
+    SENDER.get('/exists/group/'+this.props.match.params.gid).then(res => {
+      if(res.status > 400){
+        this.props.history.push('/')
+      }
+    })
+    const params = new URLSearchParams(this.props.location.search);
+    const itoken = params.get("itoken");
 
-    if(itoken){
-      SENDER.post("/member/" + itoken)
-      .then(res => {
-        alert("You have been added to group")
-        this.setState({trig: 1})
+    if (itoken) {
+      SENDER.post("/member/" + itoken,null,{
+        params: {
+          user_id: localStorage.getItem('id')
+        }
       })
-      .catch(err => console.log(err));
+        .then(res => {
+          alert("You have been added to group");
+          this.setState(prevState => ({ trig:  !prevState.trig}));
+        })
+        .catch(err => console.log(err));
     }
 
     SENDER.get("/groups/" + this.props.match.params.gid)
       .then(res => {
-        this.setState({ groupData: res.data });
+        this.setState({
+          groupData: res.data,
+          description: res.data.description,
+        });
       })
       .catch(err => console.log(err));
 
-      SENDER.get("/member/"+this.props.match.params.gid+"/is-admin/"+localStorage.getItem('id'))
+    // SENDER.get("/groups/" + this.props.match.params.gid)
+    //   .then(res => this.setState({ groupActivities: res.data }))
+    //   .catch(err => console.log(err));
+
+      SENDER.get("/groups/" + this.props.match.params.gid+"/activity")
+      .then(res => this.setState({ groupActivities: res.data }))
+      .catch(err => console.log(err));
+
+    SENDER.get(
+      "/member/" +
+        this.props.match.params.gid +
+        "/is-admin/" +
+        localStorage.getItem("id")
+    )
       .then(res => {
-        console.log("admin "+res.data)
-        this.setState({isAdmin:res.data})
+        console.log("admin " + res.data);
+        this.setState({ isAdmin: res.data });
       })
       .catch(err => console.log(err));
 
-      SENDER.get("/" + this.props.match.params.gid + "/tasks")
+    SENDER.get("/" + this.props.match.params.gid + "/tasks")
       .then(res => {
-        this.setState({tasks: res.data,TaskCount: res.data.length})
+        console.log("group tasks");
+        console.log(res.data);
+        this.setState({ tasks: res.data, TaskCount: res.data.length });
         //props.sendTaskCount(res.data.length);
       })
       .catch(err => console.log(err));
@@ -254,245 +160,279 @@ class Group extends Component {
       })
       .catch(err => console.log(err));
 
-      SENDER.get("/member/" + this.props.match.params.gid)
+    SENDER.get("/member/" + this.props.match.params.gid)
       .then(res => {
         console.log(res.data);
-        this.setState({memberCount: res.data.length})
-        const admins = res.data.filter( member => member.role=="admin")
-        const members = res.data.filter( member => member.role=="member")
-        this.setState({admins: admins})
-        this.setState({members: members})
+        this.setState({ memberCount: res.data.length });
+        const admins = res.data.filter(member => member.role == "admin");
+        const members = res.data.filter(member => member.role == "member");
+        this.setState({ admins: admins });
+        this.setState({ members: members });
       })
       .catch(err => console.log(err));
-
-
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      SENDER.get("/groups/" + this.props.match.params.gid)
-        .then(res => {
-          this.setState({ groupData: res.data });
-        })
-        .catch(err => console.log(err));
-
-        SENDER.get("/" + this.props.match.params.gid + "/tasks")
-        .then(res => {
-          this.setState({tasks: res.data});
-          //props.sendTaskCount(res.data.length);
-        })
-        .catch(err => console.log(err));
-
-        SENDER.get("/member/"+this.props.match.params.gid+"/is-admin/"+localStorage.getItem('id'))
-        .then(res => {
-          console.log("admin"+ res.data)
-          this.setState({isAdmin:res.data})
-        })
-        .catch(err => console.log(err));
-
-      SENDER.get("/notices/group/" + this.props.match.params.gid)
-        .then(res => {
-          console.log(res.data);
-          this.setState({ notices: res.data });
-        })
-        .catch(err => console.log(err));
-    }
   }
 
   toggle = () => {
     this.setState({
       popoverOpen: !this.state.popoverOpen,
     });
+  };
+
+  getClickedTask = task => {
+    this.setState({ selectedTask: task });
+  };
+
+  updateTaskList = () => {
+    SENDER.get("/" + this.props.match.params.gid + "/tasks")
+    .then(res => {
+      console.log("group tasks");
+      console.log(res.data);
+      this.setState({ tasks: res.data, TaskCount: res.data.length });
+      //props.sendTaskCount(res.data.length);
+    })
+    .catch(err => console.log(err));
   }
 
   render() {
     return (
-      <>
-        <GroupHeader 
+      <div style={{}}>
+        <GroupHeader
           name={this.state.groupData.name}
           groupId={this.props.match.params.gid}
         />
         <Row style={{ marginTop: "0.5%" }}>
-          <Col xs="12" sm="6" lg="3">
-            <Card>
+          <Col xs="12" sm="6" lg="3" style={{  }}>
+            <Card className="border-light">
               <CardHeader>
                 <b>Tasks</b>
                 <div className="card-header-actions">
-                  <NewTaskForm groupId={this.props.match.params.gid} isAdmin={this.state.isAdmin}/>
+                  <NewTaskForm
+                    groupId={this.props.match.params.gid}
+                    onAdd={this.updateTaskList}
+                    isAdmin={this.state.isAdmin}
+                  />
                 </div>
               </CardHeader>
-              <CardBody style={{padding: 0}}>{
-                this.state.tasks.map( task => {
-                  return <Card
-                  style={{ cursor: "pointer",padding: "2.5%",margin: 0}}
-                  key={task.id}
-                  onClick={() => this.setState({selectedTask: task})}
-                  >
-                      {task.name} 
-                  </Card>
-                })
-              }</CardBody>
+              <CardBody style={{ backgroundColor: "#D6E0E3", padding: 0 }}>
+                {this.state.tasks.length > 0 ? (
+                  this.state.tasks.map(task => {
+                    return (
+                      <TaskItem
+                        style={{
+                          cursor: "pointer",
+                          padding: "2.5%",
+                          margin: 0,
+                        }}
+                        key={task.id}
+                        task={task}
+                        sendTask={this.getClickedTask}
+                      />
+                    );
+                  })
+                ) : (
+                  <div className="text-center" style={{display: this.state.isAdmin ? "block" : "none"}}>
+                    No tasks. Add some tasks from top right + sign in this
+                    widget
+                  </div>
+                )}
+              </CardBody>
               <TaskViewer
-        name={this.state.selectedTask ? this.state.selectedTask.name : ""}
-        id={this.state.selectedTask ? this.state.selectedTask.id : ""}
-        isAdmin={this.state.isAdmin}
-        group={this.state.groupData.name}
-      />
+                name={
+                  this.state.selectedTask ? this.state.selectedTask.name : ""
+                }
+                groupId={this.props.match.params.gid}
+                id={this.state.selectedTask ? this.state.selectedTask.id : ""}
+                isAdmin={this.state.isAdmin}
+                group={this.state.groupData.name}
+              />
             </Card>
           </Col>
-          <Col xs="12" sm="6" lg="6">
-            <Row>
-              <Col xs="12" sm="6" lg="6">
-                <Card className="text-white bg-info">
-                  <CardBody className="pb-0 ml-0">
-                    <ButtonGroup className="float-right">
-                      <ButtonDropdown
-                        id="card1"
-                        isOpen={this.state.card1}
-                        toggle={() => {
-                          this.setState({ card1: !this.state.card1 });
-                        }}
-                      >
-                        <DropdownToggle
-                          caret
-                          className="p-0"
-                          color="transparent"
-                        >
-                          <i className="icon-settings" />
-                        </DropdownToggle>
-                        <DropdownMenu right>
-                          <DropdownItem>Action</DropdownItem>
-                          <DropdownItem>Another action</DropdownItem>
-                          <DropdownItem disabled>Disabled action</DropdownItem>
-                          <DropdownItem>Something else here</DropdownItem>
-                        </DropdownMenu>
-                      </ButtonDropdown>
-                    </ButtonGroup>
-                    <div className="text-value">65%</div>
-                    <div>Completed</div>
-                  </CardBody>
-                  <div
-                    className="chart-wrapper mx-3"
-                    style={{ height: "70px" }}
-                  >
-                    <Line
-                      data={cardChartData2}
-                      options={cardChartOpts2}
-                      height={70}
-                    />
-                  </div>
-                </Card>
-              </Col>
+          <Col xs="12" sm="6" lg="4" style={{}}>
+            <Card>
+              <CardBody style={{ display: "flex", flexDirection: "column" }}>
+                <h5>{this.state.percentage}% completed</h5>
+                <Progress
+                  className="progress-xs mt-2"
+                  color="success"
+                  value={this.state.percentage}
+                />
+              </CardBody>
+            </Card>
 
-              <Col xs="12" sm="6" lg="6" >
-                <Card className="text-white bg-primary">
-                  <CardBody className="pb-0">
-                    <ButtonGroup className="float-right">
-                      <Dropdown
-                        id="card2"
-                        isOpen={this.state.card2}
-                        toggle={() => {
-                          this.setState({ card2: !this.state.card2 });
+            <Card style={{ margin: 0 }}>
+              <CardHeader>
+                <b>Group Activity</b>
+                <div className="card-header-actions" />
+              </CardHeader>
+              <CardBody style={{padding: 0}}>
+                {this.state.groupActivities.length > 0 ? this.state.groupActivities.map(activity => (
+                  <ListGroupItem
+                    action
+                    style={{
+                      padding: "2%",
+                      //paddingLeft: "1%",
+                      alignItems: "center",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                    key={activity.id}
+                    className="list-group-item-accent-warning"
+                  >
+                    <div style={{ marginLeft: "1%" }}>{activity.description} </div>
+                  </ListGroupItem>
+                )):
+                <></>}
+              </CardBody>
+            </Card>
+          </Col>
+
+          <Col xs="12" sm="6" lg="3" style={{ paddingLeft: 0 }}>
+            <Card style={{marginBottom: 0,borderBottom: 0}}>
+              <CardHeader>
+                <b>About</b>
+                <div className="card-header-actions">
+                  <i
+                    className="fa fa-edit float-right"
+                    onClick={() => this.setState({ desEditable: true })}
+                    style={{
+                      display: this.state.isAdmin ? "block" : "none",
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+              </CardHeader>
+              <CardBody>
+                <div
+                  ref={this.groupDesc}
+                  contentEditable={this.state.desEditable}
+                  style={{
+                    border: this.state.desEditable ? "1px solid gray" : "none",
+                    padding: this.state.desEditable ? "5%" : 0,
+                    textAlign: "justify",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {this.state.description}
+                </div>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <Button
+                    style={{
+                      marginTop: "1%",
+                      display: this.state.desEditable ? "block" : "none",
+                    }}
+                    onClick={this.handleDesChange}
+                    color="success"
+                  >
+                    update
+                  </Button>
+                  <p
+                    style={{
+                      margin: "3% 0% 0% 1%",
+                      color: "red",
+                      display: this.state.desEditable ? "block" : "none",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => this.setState({ desEditable: false })}
+                  >
+                    Cancel
+                  </p>
+                </div>
+              </CardBody>
+            </Card>
+            <Card className="card-accent-secondary" style={{}}>
+              <CardHeader>
+                <b>Announcements</b>
+                <div className="card-header-actions">
+                  <NewNoticeForm
+                    groupId={this.props.match.params.gid}
+                    isAdmin={this.state.isAdmin}
+                  />
+                </div>
+              </CardHeader>
+              <CardBody style={{ padding: 0 }}>
+                {this.state.notices.map(notice => {
+                  return (
+                    <Card
+                      style={{ margin: 0, cursor: "pointer" }}
+                      className="border-light"
+                      onClick={() =>
+                        this.setState({ selectedNotice: notice.id })
+                      }
+                      key={notice.id}
+                    >
+                      <CardBody
+                        style={{
+                          padding: "3% 0% 3% 2%",
+                          flex: 1,
+                          alignItems: "center",
+                          flexDirection: "column",
                         }}
                       >
-                        <DropdownToggle className="p-0" color="transparent">
-                          <i className="icon-location-pin" />
-                        </DropdownToggle>
-                        <DropdownMenu right>
-                          <DropdownItem>Action</DropdownItem>
-                          <DropdownItem>Another action</DropdownItem>
-                          <DropdownItem>Something else here</DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </ButtonGroup>
-                    <div className="text-value">{this.state.TaskCount}</div>
-                    <div>Tasks</div>
-                  </CardBody>
-                  <div
-                    className="chart-wrapper mx-3"
-                    style={{ height: "70px" }}
-                  >
-                    <Line
-                      data={cardChartData1}
-                      options={cardChartOpts1}
-                      height={70}
-                    />
-                  </div>
-                </Card>
-              </Col>
-              </Row>
-              <Row style={{}}>
-                <Col  xs="12" sm="12" lg="5" >
-                  <Card>
-                    <CardHeader>
-                      <b>About</b>
-                      <div className="card-header-actions">
-                        <i className="fa fa-edit float-right" style={{display: this.state.isAdmin ? "block" : "none",cursor: "pointer"}}/>
-                      </div>
-                    </CardHeader>
-                    <CardBody>{this.state.groupData.description}</CardBody>
-                  </Card>
-                  <Card className="card-accent-secondary">
-                    <CardHeader>
-                      <b>Announcements</b>
-                      <div className="card-header-actions">
-                        <NewNoticeForm groupId={this.props.match.params.gid} isAdmin={this.state.isAdmin}/>
-                      </div>
-                    </CardHeader>
-                    <CardBody style={{padding: 0}}>
-                      {this.state.notices.reverse().map(notice => {
-                        return  <Card 
-                        style={{margin: 0,display: "flex",padding: "1%",cursor: "pointer"}}
-                        onClick={() => this.setState({selectedNotice: notice.id})}
-                        key={notice.id}>
-                          <p>{notice.title}</p></Card>
-                      })}
-                      <NoticeViewer id={this.state.selectedNotice ? this.state.selectedNotice:""}/>
-                    </CardBody>
-                  </Card>
-                </Col>
-                <Col xs="12" sm="12" lg="7" >
-                  <Card className="card-accent-success" style={{margin: 0,width: "inherit"}}>
-                    <CardHeader><b>Members</b></CardHeader>
-                    <CardBody style={{padding: 0}}>
-                    <ListGroupItem action style={{padding: "1%"}} tag="a" href="#">
-                      Admins
-            </ListGroupItem>
-            {this.state.admins.map( admin => {
-                        const lname = admin.lname ? admin.lname : ""
-                        return <MemberItem 
-                          img={admin.propicURL}
-                          name={admin.fname+ " "+lname}
-                        /> 
-                      })}
-            <ListGroupItem action style={{padding: "1%"}} tag="a" href="#">
-                      Members
-            </ListGroupItem>
-                      {this.state.members.map( member => {
-                        const lname = member.lname ? member.lname : ""
-                        return <MemberItem 
-                          img={member.propicURL}
-                          name={member.fname+ " "+lname}
-                        /> 
-                      })}
-                    </CardBody>
-                  </Card>
-                </Col>
-              </Row>
+                        <h6 style={{ margin: 0 }}>{notice.title}</h6>
+                        <i className="fa fa-calendar" />{" "}
+                        <b>{notice.date.slice(0, 10)}</b>
+                        <i
+                          className="fa fa-user"
+                          style={{ marginLeft: "5%" }}
+                        />{" "}
+                        <b>{notice.createdBy}</b>
+                      </CardBody>
+                    </Card>
+                  );
+                })}
+                <NoticeViewer
+                  id={
+                    this.state.selectedNotice ? this.state.selectedNotice : ""
+                  }
+                  groupId={this.props.match.params.gid}
+                />
+              </CardBody>
+            </Card>
           </Col>
-          <Col xs="12" sm="12" lg="3" style={{ }}>
-                <Card style={{minHeight:"80vh"}}>
-                    <CardHeader>
-                      <b>Recent Activity</b>
-                      <div className="card-header-actions">
-                        <i className="fa fa-edit float-right" style={{cursor: "pointer"}}/>
-                      </div>
-                    </CardHeader>
-                    <CardBody></CardBody>
-                  </Card>
-                </Col>
+          <Col xs="12" sm="6" lg="2" style={{ padding: 0 }}>
+            <Card style={{margin: 0,height: "82vh"}}>
+              <CardBody style={{ padding: 0 }}>
+                <CardHeader>
+                  <b>Admins</b>
+                </CardHeader>
+                {this.state.admins.map(admin => {
+                  const lname = admin.lname ? admin.lname : "";
+                  return (
+                    <MemberItem
+                      id={admin.userId}
+                      key={admin.fname}
+                      img={admin.propicURL}
+                      name={admin.fname + " " + lname}
+                    />
+                  );
+                })}
+                <CardHeader>
+                  <b>Members</b>
+                </CardHeader>
+                {this.state.members.length > 0 ? (
+                  this.state.members.map(member => {
+                    const lname = member.lname ? member.lname : "";
+                    return (
+                      <MemberItem
+                        id={member.userId}
+                        key={member.fname}
+                        img={member.propicURL}
+                        name={member.fname + " " + lname}
+                      />
+                    );
+                  })
+                ) : (
+                  <ListGroupItem>
+                                      <div className="text-center">
+                                      No members.Invite someone to join the group
+                  </div>
+                  </ListGroupItem>
+                )}
+              </CardBody>
+            </Card>
+          </Col>
         </Row>
-      </>
+      </div>
     );
   }
 }

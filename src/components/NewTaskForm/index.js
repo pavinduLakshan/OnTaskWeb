@@ -42,7 +42,7 @@ class NewTaskForm extends React.Component {
     }).then(
       res => {
         if(res.status === 200){
-          // window.location.reload();
+          this.props.onAdd()
           this.handleClose()
         }
       }
