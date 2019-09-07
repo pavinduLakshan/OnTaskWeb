@@ -22,13 +22,13 @@ const Mobile = props => {
         <Row style={styles.row}>
           <Col sm={12} md={8} style={{}}>
             <ol>
-              <li>
+              <li style={{fontSize: "1.2em"}}>
                 Open <b>OnTask</b> on your phone
               </li>
-              <li>
+              <li style={{fontSize: "1.2em"}}>
                 Go to <kbd>settings</kbd> and select <i>OnTask Web</i>
               </li>
-              <li>Point your phone to this screen to capture the code</li>
+              <li style={{fontSize: "1.2em"}}>Point your phone to this screen to capture the code</li>
             </ol>
           </Col>
           <Col sm={12} md={4} className="image">

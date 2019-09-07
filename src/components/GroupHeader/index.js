@@ -50,7 +50,7 @@ class GroupHeader extends Component {
       <div
         className="bg-success"
         style={{
-          //width: "100%",
+          //width: "105%",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",

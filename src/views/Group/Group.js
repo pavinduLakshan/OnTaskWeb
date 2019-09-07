@@ -247,17 +247,9 @@ class Group extends Component {
               />
             </Card>
           </Col>
+          
           <Col xs="12" sm="6" lg="4" style={{}}>
-            <Card>
-              <CardBody style={{ display: "flex", flexDirection: "column" }}>
-                <h5>{this.state.percentage}% completed</h5>
-                <Progress
-                  className="progress-xs mt-2"
-                  color="success"
-                  value={this.state.percentage}
-                />
-              </CardBody>
-            </Card>
+            
 
             <Card style={{ margin: 0 }}>
               <CardHeader>
@@ -287,7 +279,17 @@ class Group extends Component {
           </Col>
 
           <Col xs="12" sm="6" lg="3" style={{ paddingLeft: 0 }}>
-            <Card style={{marginBottom: 0,borderBottom: 0}}>
+          <Card>
+              <CardBody style={{ display: "flex", flexDirection: "column" }}>
+                <h5>{this.state.percentage}% completed</h5>
+                <Progress
+                  className="progress-xs mt-2"
+                  color="success"
+                  value={this.state.percentage}
+                />
+              </CardBody>
+            </Card>
+            <Card style={{marginBottom: 0,marginTop: "1%",borderBottom: 0}}>
               <CardHeader>
                 <b>About</b>
                 <div className="card-header-actions">
@@ -389,6 +391,7 @@ class Group extends Component {
               </CardBody>
             </Card>
           </Col>
+          
           <Col xs="12" sm="6" lg="2" style={{ padding: 0 }}>
             <Card style={{margin: 0,height: "82vh"}}>
               <CardBody style={{ padding: 0 }}>

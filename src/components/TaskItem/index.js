@@ -4,7 +4,7 @@ import { Badge,Card,CardBody } from "reactstrap";
 const TaskItem = props => {
   return (
     <Card
-      className="mb-sm-2 p-2"
+      className="mb-sm-2 p-2 m-1"
     >
         <CardBody style={{padding: 0}}>
         <div className="text-muted"       style={{ cursor: "pointer" }} onClick={() => props.sendTask(props.task)}>
@@ -15,12 +15,12 @@ const TaskItem = props => {
         <h5 style={{ margin: "1%" }}>
           <Badge color="primary">New</Badge>
         </h5>
-        <h5 style={{ margin: "1%"}}>
+        {/* <h5 style={{ margin: "1%"}}>
           <Badge color="success">Completed</Badge>
         </h5>
         <h5 style={{ margin: "1%" }}>
           <Badge color="danger">Overdue</Badge>
-        </h5>
+        </h5> */}
       </div>
         </CardBody>
     </Card>

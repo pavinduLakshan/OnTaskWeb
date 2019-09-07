@@ -26,7 +26,7 @@ class GroupSettingsModal extends React.Component {
     return (
       <>
 
-          <i alt="group settings" title="Group Settings" className="icon-settings" onClick={this.handleShow} style={{cursor: "pointer",marginRight: "0.5%"}}/>
+          <i alt="group settings" title="Group Settings" className="icon-settings" onClick={this.handleShow} style={{cursor: "pointer",marginRight: "5%"}}/>
 
         <Modal
           show={this.state.show}

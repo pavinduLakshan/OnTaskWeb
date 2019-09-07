@@ -58,10 +58,19 @@ class Profile extends Component {
           </CardBody>
         </Card>
       </Col>
-      <Col xs="12" sm="6" lg="3">
-        <Card>
-          <CardHeader>User Activity</CardHeader>
+      <Col xs="12" sm="12" lg="3">
+      
+        <Card style={{padding: "1%",display: "flex",backgroundColor: "#1FDC75",flexDirection: "row",alignItems: "center"}}>
+        <i className="fa fa-graduation-cap"></i>
+          <h5>Education</h5>
         </Card>
+      
+      
+      <Card style={{padding: "1%",display: "flex",backgroundColor: "#1FDC75",flexDirection: "row",alignItems: "center"}}>
+      <i className="fa fa-briefcase"></i>
+      <h5>Work</h5>
+      </Card>
+      
       </Col>
       </Row>  
     );
