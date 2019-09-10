@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { Bar, Line } from "react-chartjs-2";
 import Pusher from "pusher-js";
 import pusher from "../../utils/PusherObject";
+import GroupActivityItem from './GroupActivityItem'
 import RequireAuth from "../../utils/PrivateRoute";
 import GroupHeader from "../../components/GroupHeader";
 import TaskItem from "../../components/TaskItem";
@@ -49,12 +50,15 @@ class Group extends Component {
     this.groupDesc = React.createRef();
 
     var channel = pusher.subscribe("group_" + this.props.match.params.gid);
-    channel.bind("new_task", this.hha);
+    channel.bind("new_activity", this.updateGroupActivityFeed);
   }
 
-  hha = data => {
-    console.log("Evt data: ");
-    console.log(data);
+  updateGroupActivityFeed = data => {
+    console.log("pusher_new_task: ")
+    console.log(data)
+    this.setState( prevState => (
+      {groupActivities: [...prevState.groupActivities,JSON.parse(data)]}
+    ))
   };
 
   handleDesChange = () => {
@@ -67,7 +71,6 @@ class Group extends Component {
     })
       .then(
         res => {}
-        //alert("Description Updated")
       )
       .catch(err => alert("Error"));
   };
@@ -124,12 +127,12 @@ class Group extends Component {
       })
       .catch(err => console.log(err));
 
-    // SENDER.get("/groups/" + this.props.match.params.gid)
-    //   .then(res => this.setState({ groupActivities: res.data }))
-    //   .catch(err => console.log(err));
-
       SENDER.get("/groups/" + this.props.match.params.gid+"/activity")
-      .then(res => this.setState({ groupActivities: res.data }))
+      .then(res => {
+        console.log("activities: ")
+        console.log(res.data)
+        this.setState({ groupActivities: res.data })
+      })
       .catch(err => console.log(err));
 
     SENDER.get(
@@ -193,6 +196,15 @@ class Group extends Component {
     .catch(err => console.log(err));
   }
 
+  updateNoticeList = () => {
+    SENDER.get("/notices/group/" + this.props.match.params.gid)
+    .then(res => {
+      console.log(res.data);
+      this.setState({ notices: res.data });
+    })
+    .catch(err => console.log(err));
+  }
+
   render() {
     return (
       <div style={{}}>
@@ -201,7 +213,7 @@ class Group extends Component {
           groupId={this.props.match.params.gid}
         />
         <Row style={{ marginTop: "0.5%" }}>
-          <Col xs="12" sm="6" lg="3" style={{  }}>
+          <Col xs="12" sm="12" lg="3" style={{  }}>
             <Card className="border-light">
               <CardHeader>
                 <b>Tasks</b>
@@ -248,7 +260,7 @@ class Group extends Component {
             </Card>
           </Col>
           
-          <Col xs="12" sm="6" lg="4" style={{}}>
+          <Col xs="12" sm="12" lg="4" style={{}}>
             
 
             <Card style={{ margin: 0 }}>
@@ -258,20 +270,11 @@ class Group extends Component {
               </CardHeader>
               <CardBody style={{padding: 0}}>
                 {this.state.groupActivities.length > 0 ? this.state.groupActivities.map(activity => (
-                  <ListGroupItem
-                    action
-                    style={{
-                      padding: "2%",
-                      //paddingLeft: "1%",
-                      alignItems: "center",
-                      display: "flex",
-                      flexDirection: "row",
-                    }}
-                    key={activity.id}
-                    className="list-group-item-accent-warning"
-                  >
-                    <div style={{ marginLeft: "1%" }}>{activity.description} </div>
-                  </ListGroupItem>
+                   <GroupActivityItem 
+                      description={activity.description}
+                      key={activity.id}
+                      createdAt={activity.createdAt}
+                  />
                 )):
                 <></>}
               </CardBody>
@@ -289,7 +292,7 @@ class Group extends Component {
                 />
               </CardBody>
             </Card>
-            <Card style={{marginBottom: 0,marginTop: "1%",borderBottom: 0}}>
+            <Card style={{padding: "1%",marginBottom: 0,marginTop: "1%",borderBottom: 0}}>
               <CardHeader>
                 <b>About</b>
                 <div className="card-header-actions">
@@ -309,7 +312,7 @@ class Group extends Component {
                   contentEditable={this.state.desEditable}
                   style={{
                     border: this.state.desEditable ? "1px solid gray" : "none",
-                    padding: this.state.desEditable ? "5%" : 0,
+                    padding: this.state.desEditable ? "4%" : 0,
                     textAlign: "justify",
                     borderRadius: "5px",
                   }}
@@ -348,6 +351,7 @@ class Group extends Component {
                   <NewNoticeForm
                     groupId={this.props.match.params.gid}
                     isAdmin={this.state.isAdmin}
+                    updateNoticeList={this.updateNoticeList}
                   />
                 </div>
               </CardHeader>
