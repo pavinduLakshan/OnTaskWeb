@@ -2,7 +2,6 @@ import React,{ useState,useRef,useEffect} from 'react'
 import './styles.css'
 import { Camera } from "styled-icons/boxicons-solid/Camera";
 import SENDER from "../../utils/SENDER";
-import { User } from 'styled-icons/boxicons-regular/User'
 
 const ProfilePicture = props => {
     const uploader = useRef(null);
@@ -16,7 +15,7 @@ const ProfilePicture = props => {
         console.log(event.target.files[0]);
         let formData = new FormData();
         formData.append("file", event.target.files[0]);
-        formData.append("name", event.target.files[0].name);
+        formData.append("name", event.target.files[0].name.replace(/(|)/g,"_"));
     
         SENDER.post(
           "/user/" + localStorage.getItem("id") + "/change-propic",
@@ -24,7 +23,7 @@ const ProfilePicture = props => {
         )
           .then(res => {
             if (res.status === 200) {
-              alert("Propic suc");
+              //alert("Propic suc");
               setOn(!on)
             }
           })
@@ -56,7 +55,7 @@ const ProfilePicture = props => {
           className="pro_pic"
           alt=""
           style={{ borderRadius: "10px",height: "40vh",width: "100%"}}
-        />:<i class="fa fa-user" style={{marginLeft: "9%",fontSize: "220px"}}></i>
+        />:<i className="fa fa-user" style={{marginLeft: "9%",fontSize: "220px"}}></i>
         }
         </div>
         <div className="pro_pic_update_btn" style={{display: localStorage.getItem('id') === props.id ? "block" : "none"}}>

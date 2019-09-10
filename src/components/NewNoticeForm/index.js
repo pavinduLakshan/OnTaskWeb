@@ -50,7 +50,8 @@ class NewNoticeForm extends Component{
             content: this.state.content
           }).then(res => {
             if(res.status === 200){
-              alert("New Notice was added successfully")
+              this.props.updateNoticeList()
+              this.handleClose()
             }
           }).catch(err => console.log(err))
         }  

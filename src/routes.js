@@ -5,9 +5,7 @@ const Dashboard = React.lazy(() => import('./views/Dashboard'));
 const Group = React.lazy(() => import('./views/Group'));
 const Profile = React.lazy(() => import('./views/Profile'));
 const Users = React.lazy(() => import('./views/Users/Users'));
-const User = React.lazy(() => import('./views/Users/User'));
 
-// https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },

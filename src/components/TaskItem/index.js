@@ -12,9 +12,9 @@ const TaskItem = props => {
         <p style={{margin: 0}}>due {props.task.dueDate}</p>
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}>
-        <h5 style={{ margin: "1%" }}>
+        {/* <h5 style={{ margin: "1%" }}>
           <Badge color="primary">New</Badge>
-        </h5>
+        </h5> */}
         {/* <h5 style={{ margin: "1%"}}>
           <Badge color="success">Completed</Badge>
         </h5>

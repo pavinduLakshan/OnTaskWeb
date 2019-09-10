@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { ListGroupItem } from 'reactstrap';
 
 class GroupMemberItem extends Component {
-    constructor(props) {
-        super(props);
-        
-    }
-    
+   
     render() {
         return (
             <ListGroupItem action tag="a" href={"/users/"+this.props.id} style={{padding: "1%",alignItems: "center",display: "flex",flexDirection: "row"}} className="list-group-item-accent-warning">

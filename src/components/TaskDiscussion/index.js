@@ -9,8 +9,6 @@ const TaskDiscussion = props => {
   const [comments, setComments] = useState([]);
 
   function addComments(data){
-    console.log("chat evt")
-    //console.log(data)
     SENDER.get("/comments/" + parseInt(props.taskId))
     .then(res => {
       setComments(res.data);
@@ -35,7 +33,7 @@ const TaskDiscussion = props => {
         <b>Discussion</b>
       </CardHeader>
       <CardBody style={{ padding: 0,height: "65vh",overflowY: "auto",paddingTop: "1%" }}>
-      {comments.map(comment => {
+      {comments.length > 0 ? comments.map(comment => {
           return (
             <Comment
               key={comment.id}
@@ -44,7 +42,7 @@ const TaskDiscussion = props => {
               fname={comment.fname}
             />
           );
-        })}
+        }): <h6 style={{textAlign: "left",color: "gray",paddingTop: "1%"}}>Be the first to post a comment</h6>}
         <CommentBox taskId={props.taskId} />
       </CardBody>
     </Card>

@@ -91,7 +91,7 @@ const SubTasks = props => {
                 name={result.fname+""+lname}
               ></MemberSearchItem>
             })}
-                    {asignees.map( asignee => {
+                    {asignees.length > 0 ? asignees.map( asignee => {
                       const lname = asignee.lname ? asignee.lname : ""
                       return <TaskAsigneeItem 
                         key={asignee.userId}
@@ -101,7 +101,7 @@ const SubTasks = props => {
                         onRemove={onRemove}
                         name={asignee.fname+""+lname}
                       />
-                    })}
+                    }): <h6 style={{textAlign: "center",color: "gray",paddingTop: "2%"}}>No asignees</h6>}
                   </ListGroup>
                 </CardBody>
               </Card>

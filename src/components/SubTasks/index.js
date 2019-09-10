@@ -68,7 +68,7 @@ const SubTasks = props => {
                       <Button color="success" style={{float: "right"}}>Add</Button>
                   </Form>
                   <ListGroup>
-                    {subtasks.map( subtask => {
+                    {subtasks.length > 0 ? subtasks.map( subtask => {
                       return <SubTaskItem 
                         taskId={props.taskId}
                         key={subtask.id}
@@ -77,7 +77,7 @@ const SubTasks = props => {
                         notifySubtaskStatusChange={getMarkedSubtaskChange}
                         name={subtask.name}
                       />
-                    })}
+                    }): <h6 style={{textAlign: "center",color: "gray",paddingTop: "2%"}}>Add subtasks to measure task completion status</h6>}
                   </ListGroup>
                 </CardBody>
               </Card>

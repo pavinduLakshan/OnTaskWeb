@@ -46,7 +46,6 @@ class GroupInviteModal extends React.Component {
   }
 
   addMember = data => {
-    console.log("addd");
     console.log(data);
     const newSR = this.state.searchResults.filter(function(value, index, arr) {
       return value !== data;
@@ -89,7 +88,7 @@ class GroupInviteModal extends React.Component {
     this.setState({
       show: false,
       groupMembers: [],
-      inviteLink: "hehehe",
+      inviteLink: "",
       copySuccess: '',
       trig: true,
       message:

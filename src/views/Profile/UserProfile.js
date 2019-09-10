@@ -57,7 +57,7 @@ const UserProfile = props => {
               </div>
               <div style={{display: userData.githubLink ? "flex": "none",flexDirection: "row",alignItems: "center"}}>
               <Github size={15} />
-              <a href={userData.githubLink} style={{margin: "0.5%",marginLeft: "1.5%"}}>{userData.githubLink}</a>
+              <a href={userData.githubLink} style={{margin: "0.5%",marginLeft: "1.5%",color: "black"}}>{userData.githubLink}</a>
               </div>
               <div style={{display:  userData.websiteLink ? "flex" : "none",flexDirection: "row",alignItems: "center"}}>
               <Link2 size={15} />
