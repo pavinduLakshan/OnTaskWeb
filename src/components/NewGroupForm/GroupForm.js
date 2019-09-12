@@ -1,4 +1,4 @@
-import React, { useState,useCallBack } from "react";
+import React, { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -44,7 +44,6 @@ const GroupForm = props => {
   }
 
   function addMember(data){
-      console.log("addd")
       console.log(data)
       const newSR = searchResults.filter(function(value, index, arr){
 
@@ -60,7 +59,6 @@ const GroupForm = props => {
 
   function createNewGroup(e) {
     e.preventDefault();
-    console.log(values);
     SENDER.post("/groups", {
       userId: localStorage.getItem('id'),
       name: values.name,
@@ -69,7 +67,8 @@ const GroupForm = props => {
     })
       .then(res => {
         if (res.status === 200) {
-          alert("New group was created successfully");
+          props.handleClose();
+          props.history.push('/groups/'+res.data)
           window.location.reload()
         }
       })
@@ -86,11 +85,17 @@ const GroupForm = props => {
     setNOfChars(160 - e.target.value.length);
   };
 
+  const handleKeyDown = event => {
+    if (event.key === 'Enter' && event.shiftKey === false) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <>
       <Row>
         <Col sm={6}>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} onKeyDown={e => { handleKeyDown(e) }}>
             <Form.Group>
               <label>Name</label>
               <Form.Control required name="name" onChange={handleChange} />
@@ -129,12 +134,12 @@ const GroupForm = props => {
           </InputGroup>
           <div className="selected" style={{paddingTop: "2%"}}>
           {groupMembers ? groupMembers.map( result => {
-              const lname = result.lname ? result.lname : ""
+              const lname = result.lname ? result.lname : " "
               return <MemberSearchItem
                 key={result.userId}
                 data={result}
                 selected={true}
-                name={result.fname+""+lname}
+                name={result.fname+" "+lname}
               ></MemberSearchItem>
             }): <></>}
           </div>
@@ -145,7 +150,7 @@ const GroupForm = props => {
                 key={result.userId}
                 data={result}
                 selectMember={addMember}
-                name={result.fname+""+lname}
+                name={result.fname+" "+lname}
               ></MemberSearchItem>
             })}
           </div>

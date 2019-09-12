@@ -1,41 +1,17 @@
-import React, { Component, lazy, Suspense } from "react";
-import { Bar, Line } from "react-chartjs-2";
+import React, { Component } from "react";
 import RequireAuth from "../../utils/PrivateRoute";
 import TaskItem from "../../components/TaskItem";
 import SENDER from "../../utils/SENDER";
 import TaskViewer from "../TaskViewer";
 import {
-  Badge,
-  Button,
-  ButtonDropdown,
-  ButtonGroup,
-  ButtonToolbar,
   Card,
   CardBody,
-  CardFooter,
-  CardHeader,
-  CardTitle,
   Col,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   Input,
-  Progress,
   Row,
-  Table,
 } from "reactstrap";
-import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
-import { getStyle, hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
+
 import GroupItem from "./GroupItem";
-
-const Widget03 = lazy(() => import("../../views/Widgets/Widget03"));
-
-const brandPrimary = getStyle("--primary");
-const brandSuccess = getStyle("--success");
-const brandInfo = getStyle("--info");
-const brandWarning = getStyle("--warning");
-const brandDanger = getStyle("--danger");
 
 class Dashboard extends Component {
   constructor(props) {

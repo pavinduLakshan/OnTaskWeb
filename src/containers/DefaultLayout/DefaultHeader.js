@@ -77,8 +77,6 @@ class DefaultHeader extends Component {
 
     SENDER.get("/user/" + localStorage.getItem("id") + "/u_notifications")
       .then(res => {
-        console.log("notifications:")
-        console.log(res.data)
         this.setState({ notifications: res.data,noOfNotis: res.data.length })
       })
       .catch(err => console.log(err));
@@ -143,7 +141,8 @@ class DefaultHeader extends Component {
                 {this.state.notifications.map(notification => {
                   return (
                     <UserNotification
-                      id={notification.n_id}
+                      id={notification.n_id || notification.id }
+                      key={notification.n_id || notification.id }
                       markAsSeen={() =>this.markNotificationAsSeen(notification.n_id)}
                       description={notification.description || notification.activity.description}
                       createdAt={notification.createdAt || notification.activity.createdAt}

@@ -7,24 +7,9 @@ import ReactMarkdown from "react-markdown";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 
-const emojiDeselectedStyle = {
-  color: "gray", 
-  //textShadow: "0 0 0 red"
-}
-
-const emojiSelectedStyle = {
-  cursor: "pointer",marginLeft: "auto",paddingTop: "2%"
-}
-
-
-
 const CommentBox = props => {
   const [input, setInput] = useState("");
   const [isShown, setIsShown] = useState(false);
-
-  function controlEmojiPickerShow() {
-    setIsShown(!isShown);
-  }
 
   function handleChange(e) {
     setInput(e.target.value);
@@ -33,11 +18,6 @@ const CommentBox = props => {
   function postComment(event) {
     setInput("");
     event.preventDefault();
-    // console.log({
-    //     taskId: props.taskId,
-    //     content: input,
-    //     userId: parseInt(localStorage.getItem('id'))
-    // })
     SENDER.post("/comments", {
       taskId: props.taskId,
       content: input,
@@ -70,9 +50,6 @@ const CommentBox = props => {
       <div
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        <p style={ isShown ? emojiSelectedStyle : emojiDeselectedStyle} onClick={controlEmojiPickerShow}>
-          🙂
-        </p>
         <div style={{ flexGrow: 1 }} />
         <Button
           color="success"

@@ -45,8 +45,6 @@ const brandDanger = getStyle("--danger");
 class Group extends Component {
   constructor(props) {
     super(props);
-    // Enable pusher logging - don't include this in production
-
     this.groupDesc = React.createRef();
 
     var channel = pusher.subscribe("group_" + this.props.match.params.gid);
@@ -54,8 +52,6 @@ class Group extends Component {
   }
 
   updateGroupActivityFeed = data => {
-    console.log("pusher_new_task: ")
-    console.log(data)
     this.setState( prevState => (
       {groupActivities: [...prevState.groupActivities,JSON.parse(data)]}
     ))
@@ -129,8 +125,6 @@ class Group extends Component {
 
       SENDER.get("/groups/" + this.props.match.params.gid+"/activity")
       .then(res => {
-        console.log("activities: ")
-        console.log(res.data)
         this.setState({ groupActivities: res.data })
       })
       .catch(err => console.log(err));
@@ -142,30 +136,24 @@ class Group extends Component {
         localStorage.getItem("id")
     )
       .then(res => {
-        console.log("admin " + res.data);
         this.setState({ isAdmin: res.data });
       })
       .catch(err => console.log(err));
 
     SENDER.get("/" + this.props.match.params.gid + "/tasks")
       .then(res => {
-        console.log("group tasks");
-        console.log(res.data);
         this.setState({ tasks: res.data, TaskCount: res.data.length });
-        //props.sendTaskCount(res.data.length);
       })
       .catch(err => console.log(err));
 
     SENDER.get("/notices/group/" + this.props.match.params.gid)
       .then(res => {
-        console.log(res.data);
         this.setState({ notices: res.data });
       })
       .catch(err => console.log(err));
 
     SENDER.get("/member/" + this.props.match.params.gid)
       .then(res => {
-        console.log(res.data);
         this.setState({ memberCount: res.data.length });
         const admins = res.data.filter(member => member.role == "admin");
         const members = res.data.filter(member => member.role == "member");
@@ -188,10 +176,7 @@ class Group extends Component {
   updateTaskList = () => {
     SENDER.get("/" + this.props.match.params.gid + "/tasks")
     .then(res => {
-      console.log("group tasks");
-      console.log(res.data);
       this.setState({ tasks: res.data, TaskCount: res.data.length });
-      //props.sendTaskCount(res.data.length);
     })
     .catch(err => console.log(err));
   }
@@ -199,7 +184,6 @@ class Group extends Component {
   updateNoticeList = () => {
     SENDER.get("/notices/group/" + this.props.match.params.gid)
     .then(res => {
-      console.log(res.data);
       this.setState({ notices: res.data });
     })
     .catch(err => console.log(err));
