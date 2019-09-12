@@ -30,6 +30,7 @@ const SubTasks = props => {
     });
     SENDER.post('/task-asignee',{
           taskId: props.taskId,
+          groupId: props.groupId,
           userId: data.userId,
           addedById: localStorage.getItem('id')
         }).then(res => {
