@@ -1,10 +1,9 @@
 import React, { Component } from "react"
 import {Row,Col,Card,
   CardBody} from 'reactstrap'
-//import Logo from '../../assets/img/brand/logo.PNG'
 import Logo from '../../assets/img/brand/logo.svg' 
-import MobileLogin from './mobile'
-import EmailLogin from './email'
+import MobileLogin from './components/mobile'
+import EmailLogin from './components/email'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 

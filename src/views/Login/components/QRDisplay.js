@@ -1,5 +1,5 @@
 import React from 'react';
-import QR from '../../assets/img/qr.png'
+import QR from '../../../assets/img/qr.png'
 import './styles.css'
 
 const QRDisplay = () => {
