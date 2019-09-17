@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import RequireAuth from "../../utils/PrivateRoute";
 import TaskItem from "../../components/TaskItem";
+import pusher from "../../utils/PusherObject";
+import UserNotification from '../../containers/DefaultLayout/UserNotification'
 import SENDER from "../../utils/SENDER";
 import TaskViewer from "../TaskViewer";
 import {
@@ -10,19 +12,18 @@ import {
   Input,
   Row,
 } from "reactstrap";
-
-import GroupItem from "./GroupItem";
+import GroupItem from "./components/GroupItem";
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
-    this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
 
     this.state = {
       groups: [],
       assignedTasks: [],
+      feedItems:[],
       selectedTask: null,
     };
   }
@@ -33,26 +34,36 @@ class Dashboard extends Component {
     });
   }
 
-  onRadioBtnClick(radioSelected) {
-    this.setState({
-      radioSelected: radioSelected,
-    });
-  }
+  updateFeed = data => {
+    this.setState(prevState => ({
+      feedItems: [...prevState.feedItems, JSON.parse(data)],
+    }));
+  };
 
-  componentDidMount() {
+  async componentDidMount() {
     SENDER.get("/user/" + localStorage.getItem("id") + "/tasks")
-      .then(res => {
-        console.log("my tasks: ");
-        console.log(res.data);
-        this.setState({ assignedTasks: res.data });
-      })
-      .catch(err => console.log(err));
+    .then(res => {
+      this.setState({ assignedTasks: res.data });
+    })
+    .catch(err => console.log(err));
 
-    SENDER.get("/" + localStorage.getItem("id") + "/groups")
-      .then(res => this.setState({ groups: res.data }))
+    await SENDER.get("/" + localStorage.getItem("id") + "/groups")
+      .then(res => {
+        this.setState({ groups: res.data });
+        res.data.map(group => {
+          var channel = pusher.subscribe("group_" + group.groupId);
+          channel.bind("new_activity", this.updateFeed);
+        });
+      })
       .catch(err => {
         console.log(err);
       });
+
+    SENDER.get("/user/" + localStorage.getItem("id") + "/u_notifications")
+      .then(res => {
+        this.setState({ feedItems: res.data })
+      })
+      .catch(err => console.log(err));
   }
 
   loading = () => (
@@ -70,13 +81,13 @@ class Dashboard extends Component {
           <Col xs="12" sm="12" lg="3" style={{}}>
             <Card>
               <CardBody style={{ paddingTop: "1%" }}>
-                <h5>My Tasks</h5>
-                {this.state.assignedTasks.map(task => {
+                <h6>My Tasks</h6>
+                {this.state.assignedTasks.length > 0 ? this.state.assignedTasks.map(task => {
                   return (
                     <TaskItem
                       style={{
                         cursor: "pointer",
-                        padding: "2.5%",
+                        
                         margin: 0,
                       }}
                       key={task.id}
@@ -84,15 +95,13 @@ class Dashboard extends Component {
                       task={task}
                     />
                   );
-                })}
+                }): "No tasks assigned"}
                 <TaskViewer
                   name={
                     this.state.selectedTask ? this.state.selectedTask.name : ""
                   }
-                  //groupId={this.props.match.params.gid}
-                  id={this.state.selectedTask ? this.state.selectedTask.id : ""}
+                  taskId={this.state.selectedTask ? this.state.selectedTask.id : ""}
                   isAdmin={this.state.isAdmin}
-                  //group={this.state.groupData.name}
                 />
               </CardBody>
             </Card>
@@ -105,6 +114,7 @@ class Dashboard extends Component {
                 paddingTop: "6%",
                 borderRadius: "5px",
                 paddingBottom: "0.5%",
+                marginBottom: "1%"
               }}
             >
               <div style={{ marginLeft: "1%" }}>
@@ -112,36 +122,21 @@ class Dashboard extends Component {
                 <h6>{new Date().toJSON().slice(0, 10)}</h6>
               </div>
             </div>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
-            <Card style={{ margin: "1% 0% 1% 0%", height: "10vh" }}>
-              He hehe
-            </Card>
+            {this.state.feedItems.map( feedItem => { 
+               return (
+                 <Card style={{marginBottom: 0}}>
+                   <CardBody style={{padding: "0.5%",paddingBottom: "2%"}}>
+                <UserNotification
+              id={feedItem.id }
+              key={feedItem.id }
+              markAsSeen={() =>this.markNotificationAsSeen(feedItem.id)}
+              description={feedItem.description || feedItem.activity.description}
+              createdAt={feedItem.createdAt || feedItem.activity.createdAt}
+            />
+              </CardBody>
+                 </Card>
+               )
+              })}
           </Col>
           <Col xs="12" sm="12" lg="4">
             <Card
@@ -177,9 +172,9 @@ class Dashboard extends Component {
                     return (
                       <GroupItem
                         key={group.groupId}
-                        id={group.groupId}
-                        name={group.name}
-                        last_activity="last activity"
+                        groupId={group.groupId}
+                        groupName={group.name}
+                        last_activity={group.lastActivity}
                       />
                     );
                   })
