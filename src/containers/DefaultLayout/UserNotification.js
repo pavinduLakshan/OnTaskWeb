@@ -12,12 +12,6 @@ const UserNotification = props => {
       .replace(/,/, "");
     const createdTime = CreatedDateFields[4];
     var htmlToReactParser = new HtmlToReactParser();
-
-    // function markAsSeen(id){
-    //   SENDER.post("/notifications/"+id+"/seen").then(
-    //     res => alert("seen")
-    //   ).catch(err => alert(err))
-    // }
   
     return (
       <DropdownItem onClick={props.markAsSeen}>

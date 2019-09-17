@@ -53,23 +53,6 @@ class Signup extends Component {
     });
   }
 
-  signupWithMobile = values => {
-    console.log(values);
-    axios
-      .post("/auth/signup/mobile", values)
-      .then(res => console.log(res.data))
-      .catch(err => console.log(err));
-  };
-
-  signupWithEmail = values => {
-    // axios.post('/api/auth/signup',values).then(
-    //   res => {
-    //   if(res.status === 200){
-    //     props.history.push("/login")
-    //   }}
-    // ).catch(err => console.log(err))
-  };
-
   render() {
     return (
       <div style={styles.background}>
@@ -80,18 +63,18 @@ class Signup extends Component {
           <Col
             xs="12"
             sm="6"
-            lg="4"
+            lg="3"
             className="p-3"
             style={{ paddingRight: 0 }}
           />
           <Col
             xs="12"
             sm="12"
-            lg="4"
+            lg="6"
             className="p-3"
             style={{ paddingRight: 0 }}
           >
-            <Tabs>
+            {/* <Tabs>
               <TabList style={{ padding: 0,border: 0 }}>
                 <Tab style={{ width: "50%",border: 0, margin: 0, padding: 0 }}>
                   <h5 style={{ marginTop: "5%", textAlign: "center" }}>
@@ -108,10 +91,10 @@ class Signup extends Component {
               <TabPanel style={{ marginTop: "-1.5%" }}>
                 <MobileSignup signupWithMobile={this.signupWithMobile} />
               </TabPanel>
-              <TabPanel style={{ marginTop: "-1%" }}>
-                <EmailSignup signupWithEmail={this.signupWithEmail} />
-              </TabPanel>
-            </Tabs>
+              <TabPanel style={{ marginTop: "-1%" }}> */}
+                <EmailSignup />
+              {/* </TabPanel>
+            </Tabs> */}
             <h6 style={{marginTop: "2%",textAlign: "center"}}>Have an account? <Link to="/login">Login</Link></h6>
           </Col>
         </Row>
