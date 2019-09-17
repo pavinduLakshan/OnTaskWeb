@@ -11,9 +11,9 @@ import {
   Input,
   FormText,
 } from "reactstrap";
-import GroupSettings from "../GroupSettings";
-import SENDER from "../../utils/SENDER";
-import GroupInvite from "../GroupInvite";
+import GroupSettings from "./GroupSettings";
+import SENDER from "../../../utils/SENDER";
+import GroupInvite from "./GroupInvite";
 
 class GroupHeader extends Component {
   state = {
@@ -50,7 +50,6 @@ class GroupHeader extends Component {
       <div
         className="bg-success"
         style={{
-          //width: "105%",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",

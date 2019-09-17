@@ -3,8 +3,8 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { Button, Input } from "reactstrap";
 import { SearchAlt2 } from "styled-icons/boxicons-regular/SearchAlt2";
-import MemberSearchItem from "../MemberSearchItem";
-import SENDER from "../../utils/SENDER";
+import MemberSearchItem from "../../../components/MemberSearchItem";
+import SENDER from "../../../utils/SENDER";
 import Clipboard from 'react-clipboard.js';
 import InputGroup from "react-bootstrap/InputGroup";
 
@@ -46,14 +46,24 @@ class GroupInviteModal extends React.Component {
   }
 
   addMember = data => {
-    console.log(data);
-    const newSR = this.state.searchResults.filter(function(value, index, arr) {
-      return value !== data;
-    });
-    this.setState({ searchResults: newSR });
-    this.state.groupMembers.push(data);
-    this.setState({ trig: !this.state.trig });
-    console.log([...this.state.groupMembers]);
+    console.log({
+         userId: data.userId,
+         groupId: parseInt(this.props.groupId)
+      });
+    SENDER.post('/members',{
+      userId: data.userId,
+      groupId: parseInt(this.props.groupId)
+   }).then( res => {
+      if(res.status === 200){
+        const newSR = this.state.searchResults.filter(function(value, index, arr) {
+          return value !== data;
+        });
+        this.setState({ searchResults: newSR });
+        this.state.groupMembers.push(data);
+        this.setState({ trig: !this.state.trig });
+        console.log([...this.state.groupMembers]);
+      }
+    })
   };
 
   handleChange = e => {
@@ -62,7 +72,7 @@ class GroupInviteModal extends React.Component {
 
   handleMemberSearch = e => {
     if (e.target.value) {
-      SENDER.get("/user/search/" + e.target.value)
+      SENDER.get("/users/search/"+this.props.groupId+"/" + e.target.value)
         .then(res => {
           let result = res.data;
 
