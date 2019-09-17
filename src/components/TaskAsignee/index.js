@@ -56,8 +56,6 @@ const SubTasks = props => {
 
         SENDER.get('/task-asignee/'+props.taskId).then(
           res => {
-            console.log("ass")
-            console.log(res.data)
             setAsignees(res.data)
           }
         ).catch(err => console.log(err))

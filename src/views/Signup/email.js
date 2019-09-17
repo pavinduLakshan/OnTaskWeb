@@ -19,7 +19,9 @@ class EmailSignup extends Component{
     PasswordError:"",
     checked:false,
     CheckedError:false,
-    Error:"",success:"",
+    Error:"",
+    success:"",
+    isSubmitting: false,
     fname: "",
     email: "",
     password: "",
@@ -28,7 +30,6 @@ class EmailSignup extends Component{
 
   handleChecked = e => {
     e.stopPropagation()
-    console.log(e.target.checked)
     this.setState({checked: e.target.checked})
   }
 
@@ -39,20 +40,22 @@ class EmailSignup extends Component{
   handleSubmit = evt => {
     //handle form validation here
     evt.preventDefault()
-    if(this.state.fname === undefined || (this.state.fname && this.state.fname.length === 0)){
-      this.setState({FirstNameError:"First name is required"})
+    this.setState({isSubmitting: true})
+    if(this.state.fname === "" || (this.state.fname && this.state.fname.length === 0)){
+      console.log("Hi")
+      this.setState({FirstNameError:"First name is required",isSubmitting: false})
     }
-    else if(this.state.email === undefined || (this.state.email && this.state.email.length === 0)){
-      this.setState({EmailError:"A valid email address is required"})
+    else if(this.state.email === "" || (this.state.email && this.state.email.length === 0)){
+      this.setState({EmailError:"A valid email address is required",isSubmitting: false})
     }
-    else if(this.state.password === undefined || (this.state.password && this.state.password.length === 0)){
-      this.setState({PasswordError:"A password which at least contains 6 characters is required"})
+    else if(this.state.password === "" || (this.state.password && this.state.password.length === 0)){
+      this.setState({PasswordError:"A password which at least contains 6 characters is required",isSubmitting: false})
     }
-    else if(this.state.c_pass === undefined || (this.state.password  !== this.state.c_pass)){
-      this.setState({PasswordError:"Passwords don't match"})
+    else if(this.state.c_pass === "" || (this.state.password  !== this.state.c_pass)){
+      this.setState({PasswordError:"Passwords don't match",isSubmitting: false})
     }
     else if(!this.state.checked){
-      this.setState({CheckedError:"You should agree to our terms & conditions"})
+      this.setState({CheckedError:"You should agree to our terms & conditions",isSubmitting: false})
     }
     else{
       const username = this.state.email.split('@')[0]
@@ -69,11 +72,9 @@ class EmailSignup extends Component{
         password: this.state.password
       }).then(
         res => { 
-        if(res){
-          this.setState({success:"Signed up successfully.Check your email inbox"})
-        }}
+        this.setState({success:"Signed up successfully.Check your email inbox"})
+      }
       ).catch(err => {
-        this.setState({Error:"There was an error signing up."})
         console.log(err)
       })
     }
@@ -84,7 +85,7 @@ class EmailSignup extends Component{
       // <div style={formStyle}>
           <Form onSubmit={this.handleSubmit} style={formStyle}>
         <h4 style={{ textAlign: "center"}}>Sign up with Email</h4>
-        <Form.Text style={{textAlign: "center",color: "red"}}>{Error}</Form.Text>
+        <Form.Text style={{textAlign: "center",color: "red"}}>{this.state.Error}</Form.Text>
         <Form.Text style={{textAlign: "center",color: "green"}}>{this.state.success}</Form.Text>
         <Form.Group>
           <label>First name</label>
@@ -117,7 +118,8 @@ class EmailSignup extends Component{
     </Form.Group>
   
         <div style={{display: "flex",justifyContent: "center"}}>
-      <Button className="btns" type="submit">Create Account</Button>
+      <Button className="btns" type="submit" disabled={this.state.isSubmitting ? true : false}>
+        {this.state.isSubmitting ? "Signing you up.." : "Create Account"}</Button>
       </div>
       </Form>
       // </div>

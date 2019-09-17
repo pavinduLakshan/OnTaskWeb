@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import NewGroupForm from "../../components/NewGroupForm";
 import pusher from "../../utils/PusherObject";
 import UserNotification from "./UserNotification";
@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import PropTypes from "prop-types";
 
-import { AppAsideToggler, AppNavbarBrand } from "@coreui/react";
+import { AppNavbarBrand } from "@coreui/react";
 import logo from "../../assets/img/brand/logo.svg";
 import sygnet from "../../assets/img/brand/sygnet.svg";
 
@@ -29,7 +29,7 @@ class DefaultHeader extends Component {
   constructor(props) {
     super(props);
     var channel = pusher.subscribe("user_" + localStorage.getItem("id"));
-    channel.bind("group_assign", this.updateNotifications);
+    channel.bind("group_add", this.updateNotifications);
   }
 
   state = {
@@ -101,14 +101,12 @@ class DefaultHeader extends Component {
 
         <Nav navbar style={{ height: "3vh" }}>
           <UncontrolledDropdown
-            nav
-            direction="down"
             style={{
               display: this.state.groups.length > 0 ? "block" : "none",
               marginLeft: "5%",
             }}
           >
-            <DropdownToggle caret nav>
+            <DropdownToggle caret nav direction="down">
               Groups
             </DropdownToggle>
             <DropdownMenu left="true">
@@ -130,25 +128,25 @@ class DefaultHeader extends Component {
         <Nav className="ml-auto" navbar style={{ height: "3vh" }}>
           <NewGroupForm />
           <NavItem>
-            <UncontrolledDropdown nav direction="down">
-              <DropdownToggle nav>
+            <UncontrolledDropdown>
+              <DropdownToggle nav direction="down">
                 <i className="icon-bell" size="10" />
                 <Badge pill color="danger">
                   {this.state.noOfNotis}
                 </Badge>
               </DropdownToggle>
               <DropdownMenu right={true}>
-                {this.state.notifications.map(notification => {
+                {this.state.notifications.length > 0 ? this.state.notifications.map(notification => {
                   return (
                     <UserNotification
-                      id={notification.n_id || notification.id }
-                      key={notification.n_id || notification.id }
-                      markAsSeen={() =>this.markNotificationAsSeen(notification.n_id)}
+                      id={notification.id }
+                      key={notification.id }
+                      markAsSeen={() =>this.markNotificationAsSeen(notification.id)}
                       description={notification.description || notification.activity.description}
                       createdAt={notification.createdAt || notification.activity.createdAt}
                     />
                   );
-                })}
+                }) : <div style={{textAlign: "center",padding: "4%"}}>No New Notifications</div>}
               </DropdownMenu>
             </UncontrolledDropdown>
           </NavItem>
