@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { Nav, NavItem, NavLink, Progress, TabContent, TabPane, ListGroup, ListGroupItem } from 'reactstrap';
+import { Nav, NavItem, NavLink, Progress, TabContent, Card, CardBody, Input, Row, Col, TabPane, ListGroup, ListGroupItem } from 'reactstrap';
+import BasicInfoSettings from './BasicInfoSettings'
+import WebPresenceSettings from './WebPresenceSettings'
+import ContactInfoSettings from './ContactInfoSettings'
+import WorkSettings from './WorkSettings'
+import EducationSettings from './EducationSettings'
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { AppSwitch } from '@coreui/react'
-import UserSettings from './UserSettings'
 import UserProfile from './UserProfile'
 
 const propTypes = {
@@ -20,6 +24,8 @@ class DefaultAside extends Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       activeTab: '1',
+      trigger: false,
+      editEnabled: false
     };
   }
 
@@ -29,6 +35,24 @@ class DefaultAside extends Component {
         activeTab: tab,
       });
     }
+  }
+
+  componentDidMount(){
+    if(this.props.id === localStorage.getItem('id')){
+      this.setState({editEnabled: true})
+    }
+  }
+
+  componentDidUpdate(prevProps){
+    if(prevProps !== this.props && this.props.id === localStorage.getItem('id')){
+      this.setState({editEnabled: true})
+    }
+  }
+  
+  triggerUpdate = () => {
+    this.setState( prevState => {
+      this.setState({trigger: !prevState.trigger})
+    })
   }
 
   render() {
@@ -48,28 +72,28 @@ class DefaultAside extends Component {
               Profile
             </NavLink>
           </NavItem>
-          <NavItem>
+          {/* <NavItem>
             <NavLink className={classNames({ active: this.state.activeTab === '2' })}
                      onClick={() => {
                        this.toggle('2');
                      }}>
-              {/* <i className="icon-speech"></i> */}
+              oooppppp-[pp] <i className="icon-speech"></i> 
               Activity
             </NavLink>
-          </NavItem>
+          </NavItem> */}
           <NavItem>
-            <NavLink className={classNames({ active: this.state.activeTab === '3' })}
+            <NavLink style={{display: this.state.editEnabled ? "block" : "none"}} className={classNames({ active: this.state.activeTab === '3' })}
                      onClick={() => {
                        this.toggle('3');
                      }}>
               {/* <i className="icon-settings"></i> */}
-              Edit Profile & Settings
+              <p style={{margin: 0}}>Edit Profile & Settings</p>
             </NavLink>
           </NavItem>
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId="1">
-            <UserProfile id={this.props.id}/>
+            <UserProfile id={this.props.id} trigger={this.state.trigger}/>
           </TabPane>
           <TabPane tabId="2" className="p-3">
             <div className="message">
@@ -91,76 +115,35 @@ class DefaultAside extends Component {
             <hr />
           </TabPane>
           <TabPane tabId="3" className="p-3">
-            <UserSettings />
-            {/* <h6>Settings</h6>
+          <Card>
+                <CardBody>
+                    <BasicInfoSettings id={localStorage.getItem('id')} onUpdate={this.triggerUpdate}/>
+                </CardBody>
+            </Card>
 
-            <div className="aside-options">
-              <div className="clearfix mt-4">
-                <small><b>Option 1</b></small>
-                <AppSwitch className={'float-right'} variant={'pill'} label color={'success'} defaultChecked size={'sm'}/>
-              </div>
-              <div>
-                <small className="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua.
-                </small>
-              </div>
-            </div>
+            <Card>
+                <CardBody>
+                     <ContactInfoSettings  id={localStorage.getItem('id')}/>
+                </CardBody>
+            </Card>
 
-            <div className="aside-options">
-              <div className="clearfix mt-3">
-                <small><b>Option 2</b></small>
-                <AppSwitch className={'float-right'} variant={'pill'} label color={'success'} size={'sm'}/>
-              </div>
-              <div>
-                <small className="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua.
-                </small>
-              </div>
-            </div>
+            <Card>
+                <CardBody>
+                    <WebPresenceSettings id={localStorage.getItem('id')} onUpdate={this.triggerUpdate}/>
+                </CardBody>
+            </Card>
 
-            <div className="aside-options">
-              <div className="clearfix mt-3">
-                <small><b>Option 3</b></small>
-                <AppSwitch className={'float-right'} variant={'pill'} label color={'success'} defaultChecked size={'sm'} disabled/>
-                <div>
-                  <small className="text-muted">Option disabled.</small>
-                </div>
-              </div>
-            </div>
+            <Card>
+                <CardBody>
+                     <WorkSettings id={localStorage.getItem('id')} onUpdate={this.triggerUpdate}/>
+                </CardBody>
+            </Card>
 
-            <div className="aside-options">
-              <div className="clearfix mt-3">
-                <small><b>Option 4</b></small>
-                <AppSwitch className={'float-right'} variant={'pill'} label color={'success'} defaultChecked size={'sm'} />
-              </div>
-            </div>
-
-            <hr />
-            <h6>System Utilization</h6>
-
-            <div className="text-uppercase mb-1 mt-4">
-              <small><b>CPU Usage</b></small>
-            </div>
-            <Progress className="progress-xs" color="info" value="25" />
-            <small className="text-muted">348 Processes. 1/4 Cores.</small>
-
-            <div className="text-uppercase mb-1 mt-2">
-              <small><b>Memory Usage</b></small>
-            </div>
-            <Progress className="progress-xs" color="warning" value="70" />
-            <small className="text-muted">11444GB/16384MB</small>
-
-            <div className="text-uppercase mb-1 mt-2">
-              <small><b>SSD 1 Usage</b></small>
-            </div>
-            <Progress className="progress-xs" color="danger" value="95" />
-            <small className="text-muted">243GB/256GB</small>
-
-            <div className="text-uppercase mb-1 mt-2">
-              <small><b>SSD 2 Usage</b></small>
-            </div>
-            <Progress className="progress-xs" color="success" value="10" />
-            <small className="text-muted">25GB/256GB</small> */}
+            <Card>
+                <CardBody>
+                     <EducationSettings id={localStorage.getItem('id')} onUpdate={this.triggerUpdate}/>
+                </CardBody>
+            </Card>
           </TabPane>
         </TabContent>
       </React.Fragment>

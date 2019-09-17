@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import RequireAuth from "../../utils/PrivateRoute";
+import { Activity } from 'styled-icons/feather/Activity'
 import SENDER from "../../utils/SENDER";
 import ProfilePane from './ProfilePane'
 import {
@@ -24,7 +25,8 @@ import {
 class Profile extends Component {
   state = {
     userData: "",
-    lname: ""
+    lname: "",
+    education: []
   };
 
   componentDidMount() {
@@ -59,17 +61,11 @@ class Profile extends Component {
         </Card>
       </Col>
       <Col xs="12" sm="12" lg="3">
-      
-        <Card style={{padding: "1%",display: "flex",backgroundColor: "#1FDC75",flexDirection: "row",alignItems: "center"}}>
-        <i className="fa fa-graduation-cap"></i>
-          <h5>Education</h5>
+      <Card style={{marginTop: "1%",padding: "1%",display: "flex",backgroundColor: "#1FDC75",flexDirection: "row",alignItems: "center"}}>
+        <Activity size={25}/>
+          <h5>User Activity</h5>
         </Card>
-      
-      
-      <Card style={{padding: "1%",display: "flex",backgroundColor: "#1FDC75",flexDirection: "row",alignItems: "center"}}>
-      <i className="fa fa-briefcase"></i>
-      <h5>Work</h5>
-      </Card>
+        
       
       </Col>
       </Row>  
